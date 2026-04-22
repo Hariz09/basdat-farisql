@@ -59,10 +59,10 @@ const organizer: DashboardData = {
 
 const customer: DashboardData = {
   stats: [
-    { label: "Tiket Aktif", value: "3", hint: "1 minggu ini" },
-    { label: "Acara Diikuti", value: "12", hint: "Sepanjang 2026" },
+    { label: "Tiket Aktif", value: "3", hint: "Siap digunakan" },
+    { label: "Acara Diikuti", value: "12", hint: "Total Pengalaman" },
     { label: "Kode Promo", value: "2", hint: "Dapat digunakan" },
-    { label: "Total Belanja", value: "Rp 2,4 Jt", hint: "6 bulan terakhir" },
+    { label: "Total Belanja", value: "Rp 2,4 Jt", hint: "Bulan ini" },
   ],
   tables: [
     {
