@@ -1,9 +1,6 @@
 import Link from "next/link";
+import { Database, ArrowRight, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Database, Users, ArrowRight, Sparkles } from "lucide-react";
 
 export default function LandingPage() {
   const teamMembers = [
@@ -14,91 +11,84 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col relative overflow-hidden selection:bg-primary/20">
-      {/* Efek Ambient Background */}
-      <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-250 h-125 bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+    <div className="min-h-screen bg-white text-black flex flex-col font-sans">
 
-      {/* NAVIGATION */}
-      <header className="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-8 py-5 backdrop-blur-xl bg-background/40 border-b border-border/10">
-        <div className="flex items-center gap-2 font-black text-2xl tracking-tighter">
-          <div className="bg-primary w-6 h-6 rounded-sm flex items-center justify-center">
-            <Database className="text-primary-foreground" size={14} />
+      {/* NAV */}
+      <header className="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-10 py-4 bg-white/80 backdrop-blur border-b border-black/8">
+        <div className="flex items-center gap-2.5 font-serif font-black text-lg tracking-tight">
+          <div className="w-7 h-7 bg-black rounded flex items-center justify-center">
+            <Database size={13} className="text-white" />
           </div>
-          FariSQL<span className="text-primary">.</span>
+          FariSQL
         </div>
-        
-        <div className="flex items-center gap-6">
-          <nav className="hidden md:flex gap-6 text-sm font-medium text-muted-foreground">
-            <span className="text-primary/80 font-bold uppercase tracking-widest text-[10px]">Kode Kelompok: 4</span>
-          </nav>
-          <Button asChild className="rounded-full px-7 font-bold shadow-2xl shadow-primary/20 hover:scale-105 transition-all">
-            <Link href="/login">
-              Masuk Sistem <ArrowRight className="ml-2 w-4 h-4" />
-            </Link>
+        <div className="flex items-center gap-4">
+          <span className="text-[10px] font-mono tracking-widest uppercase text-black/40 border border-black/10 px-3 py-1 rounded-full">
+            Kelompok 4
+          </span>
+          <Button asChild size="sm" className="rounded-md bg-black text-white hover:bg-black/80">
+            <Link href="/login">Masuk <ArrowRight size={13} className="ml-1" /></Link>
           </Button>
         </div>
       </header>
 
-      {/* HERO SECTION */}
-      <main className="flex-1 flex flex-col items-center justify-center pt-48 pb-24 px-6 z-10">
-        <div className="text-center space-y-10 max-w-6xl mx-auto w-full">
-          
-          <div className="space-y-6 flex flex-col items-center">
-            <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase shadow-sm">
-              <Sparkles size={12} className="mr-2" />
-              Basis Data B — Genap 2025/2026
-            </Badge>
-            
-            <h1 className="text-8xl md:text-[10rem] font-black tracking-[ -0.05em] leading-[0.85] py-4">
-              TikTak
-              <span className="block md:inline bg-linear-to-t from-primary to-primary/60 bg-clip-text text-transparent">
-                Tuk
-              </span>
-            </h1>
-            
-            <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-xl mx-auto leading-relaxed opacity-80 mt-4">
-              Platform manajemen data kolaboratif yang mengintegrasikan efisiensi struktur dengan performa tinggi.
-            </p>
-          </div>
-
-          {/* COLLABORATORS SECTION */}
-          <div className="pt-20 w-full">
-            <div className="flex flex-col items-center mb-12">
-              <div className="h-px w-24 bg-linear-to-r from-transparent via-primary/50 to-transparent mb-6" />
-              <div className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.3em] text-[10px]">
-                <Users size={14} />
-                Kolaborator
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
-              {teamMembers.map((member, index) => (
-                <div key={index} className="group relative p-8 rounded-3xl bg-card/30 border border-border/40 hover:border-primary/30 transition-all duration-500">
-                  <div className="flex flex-col items-center space-y-4">
-                    <Avatar className="w-16 h-16 border-2 border-background shadow-xl group-hover:scale-110 transition-transform duration-500">
-                      <AvatarFallback className="font-black bg-muted text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                        {member.initials}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="text-center">
-                      <h3 className="font-bold text-sm tracking-tight group-hover:text-primary transition-colors italic">
-                        {member.name}
-                      </h3>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
+      {/* HERO */}
+      <main className="flex-1 flex flex-col items-center justify-center text-center px-6 pt-32 pb-16">
+        <div className="inline-flex items-center gap-2 text-[10px] font-mono tracking-widest uppercase text-black/50 border border-black/10 px-3 py-1.5 rounded mb-10">
+          <Calendar size={10} />
+          Sistem Manajemen Event
         </div>
+
+        <h1 className="font-serif font-black leading-[0.88] tracking-tight mb-3" style={{ fontSize: "clamp(80px, 13vw, 140px)" }}>
+          Tik<span className="text-transparent [-webkit-text-stroke:2px_black]">Tak</span>
+          <span className="block italic">Tuk</span>
+        </h1>
+
+        <div className="flex items-center justify-center gap-4 my-8">
+          <div className="h-px w-16 bg-black/15" />
+          <span className="font-serif text-black/30 text-sm">✦</span>
+          <div className="h-px w-16 bg-black/15" />
+        </div>
+
+        <p className="text-sm text-black/50 max-w-xs leading-relaxed mb-10">
+          Proyek basis data untuk pengelolaan acara — tugas mata kuliah Basis Data B, Fasilkom UI.
+        </p>
+
+        <Button asChild className="rounded-md bg-black text-white hover:bg-black/80 px-6">
+          <Link href="/login">Masuk ke Sistem <ArrowRight size={14} className="ml-2" /></Link>
+        </Button>
       </main>
 
+      {/* TEAM */}
+      <section className="flex flex-col items-center pb-20 px-6">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="h-px w-10 bg-black/10" />
+          <span className="text-[10px] font-mono tracking-widest uppercase text-black/35">Anggota Kelompok</span>
+          <div className="h-px w-10 bg-black/10" />
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 border border-black/10 rounded-2xl overflow-hidden max-w-3xl w-full">
+          {teamMembers.map((m, i) => (
+            <div
+              key={i}
+              className="p-8 border-r border-black/8 last:border-r-0 hover:bg-black/2 transition-colors group"
+            >
+              <div className="w-11 h-11 rounded-lg bg-black flex items-center justify-center font-serif italic font-bold text-white text-sm mb-4 group-hover:bg-black/70 transition-colors">
+                {m.initials}
+              </div>
+              <p className="font-semibold text-xs leading-snug text-black">{m.name}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* FOOTER */}
-      <footer className="py-10 text-center z-10 border-t border-border/5 bg-muted/20">
-        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground/50">
-          &copy; 2026 FariSQL • Fasilkom Universitas Indonesia
-        </p>
+      <footer className="border-t border-black/8 px-10 py-5 flex items-center justify-between flex-wrap gap-3">
+        <span className="text-[10px] font-mono tracking-widest uppercase text-black/35">
+          © 2026 FariSQL · Fasilkom UI
+        </span>
+        <span className="font-serif italic text-[11px] text-black/25">
+          Basis Data B — Genap 2025/2026
+        </span>
       </footer>
     </div>
   );
