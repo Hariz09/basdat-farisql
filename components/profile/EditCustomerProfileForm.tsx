@@ -1,23 +1,12 @@
 "use client";
 
+import { useProfileEdit } from "@/hooks/useProfileEdit";
+import { Loader2, Save, AlertCircle, Lock } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldDescription,
-  FieldError,
-} from "@/components/ui/field";
-import { useProfileEdit } from "@/hooks/useProfileEdit";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type Props = {
   username: string;
@@ -28,44 +17,115 @@ type Props = {
 
 export function EditCustomerProfileForm({ username, email, name, phone }: Props) {
   const { state, action, pending } = useProfileEdit();
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Profil Pelanggan</CardTitle>
-        <CardDescription>
-          Username dan email tidak dapat diubah. Anda hanya dapat mengubah nama lengkap
-          dan nomor telepon.
-        </CardDescription>
-      </CardHeader>
-      <form action={action}>
-        <CardContent>
-          <FieldGroup>
-            <Field>
-              <FieldLabel htmlFor="username">Username</FieldLabel>
-              <Input id="username" defaultValue={username} readOnly disabled />
-              <FieldDescription>Tidak dapat diubah.</FieldDescription>
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input id="email" defaultValue={email} readOnly disabled />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="name">Nama Lengkap</FieldLabel>
-              <Input id="name" name="name" defaultValue={name} required />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="phone">Nomor Telepon</FieldLabel>
-              <Input id="phone" name="phone" defaultValue={phone ?? ""} inputMode="tel" required />
-            </Field>
-            {state && !state.ok ? <FieldError>{state.error}</FieldError> : null}
-          </FieldGroup>
-        </CardContent>
-        <CardFooter>
-          <Button type="submit" disabled={pending} className="ml-auto">
-            {pending ? "Menyimpan..." : "Simpan Perubahan"}
+    <div className="w-full max-w-2xl font-sans text-black">
+      
+      <div className="mb-10 border-b border-black/10 pb-6">
+        <h2 className="font-serif text-3xl font-black tracking-tight">
+          Profil Pelanggan
+        </h2>
+        <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-black/50">
+          Kelola informasi identitas Anda
+        </p>
+      </div>
+
+      <form action={action} className="space-y-8">
+        
+        {state && !state.ok && (
+          <Alert variant="destructive" className="rounded-md border-red-200 bg-red-50 py-3 text-red-900">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className="text-xs font-medium">{state.error}</AlertDescription>
+          </Alert>
+        )}
+
+        <div className="space-y-5 rounded-xl border border-black/5 bg-black/2 p-6">
+          <div className="mb-2 flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-widest text-black/40">
+            <Lock className="h-3 w-3" />
+            Data Permanen
+          </div>
+          
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="username" className="font-mono text-[10px] uppercase tracking-widest text-black/60">
+                Username
+              </Label>
+              <Input 
+                id="username" 
+                defaultValue={username} 
+                readOnly 
+                disabled 
+                className="h-11 cursor-not-allowed border-transparent bg-black/3 text-black/50 shadow-none focus-visible:ring-0"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="email" className="font-mono text-[10px] uppercase tracking-widest text-black/60">
+                Alamat Email
+              </Label>
+              <Input 
+                id="email" 
+                defaultValue={email} 
+                readOnly 
+                disabled 
+                className="h-11 cursor-not-allowed border-transparent bg-black/3 text-black/50 shadow-none focus-visible:ring-0"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-5 px-1 sm:px-0">
+          <div className="space-y-2">
+            <Label htmlFor="name" className="font-mono text-[10px] uppercase tracking-widest text-black/80">
+              Nama Lengkap <span className="text-red-500">*</span>
+            </Label>
+            <Input 
+              id="name" 
+              name="name" 
+              defaultValue={name} 
+              required 
+              disabled={pending}
+              className="h-11 rounded-md border-black/10 shadow-none focus-visible:border-black focus-visible:ring-1 focus-visible:ring-black/20"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="font-mono text-[10px] uppercase tracking-widest text-black/80">
+              Nomor Telepon <span className="text-red-500">*</span>
+            </Label>
+            <Input 
+              id="phone" 
+              name="phone" 
+              defaultValue={phone ?? ""} 
+              inputMode="tel" 
+              required 
+              disabled={pending}
+              className="h-11 rounded-md border-black/10 shadow-none focus-visible:border-black focus-visible:ring-1 focus-visible:ring-black/20"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-end border-t border-black/10 pt-6 mt-10">
+          <Button 
+            type="submit" 
+            disabled={pending} 
+            className="h-11 w-full rounded-md bg-black px-8 font-medium text-white transition-all hover:bg-black/80 sm:w-auto"
+          >
+            {pending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Menyimpan...
+              </>
+            ) : (
+              <>
+                <Save className="mr-2 h-4 w-4" strokeWidth={1.5} />
+                Simpan Perubahan
+              </>
+            )}
           </Button>
-        </CardFooter>
+        </div>
+
       </form>
-    </Card>
+    </div>
   );
 }

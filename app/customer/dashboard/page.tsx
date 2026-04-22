@@ -1,19 +1,20 @@
 import { DashboardView } from "@/components/dashboard/DashboardView";
 import { getDashboard } from "@/services/dashboardService";
-import { getSession } from "@/lib/session";
 
 export default async function CustomerDashboardPage() {
-  const user = await getSession();
   const data = getDashboard("customer");
+
   return (
     <DashboardView
       data={data}
       heading={
-        <div>
-          <p className="text-sm text-muted-foreground">Halo,</p>
-          <h1 className="text-2xl font-semibold">
-            Selamat datang kembali, {user?.name} 👋
+        <div className="flex flex-col gap-4">
+          <h1 className="font-serif text-6xl font-black tracking-tight text-black sm:text-7xl">
+            Ringkasan
           </h1>
+          <p className="max-w-md font-mono text-[10px] font-medium uppercase leading-relaxed tracking-widest text-black/50">
+            Pantauan aktivitas, riwayat transaksi, dan status tiket Anda secara real-time.
+          </p>
         </div>
       }
     />
