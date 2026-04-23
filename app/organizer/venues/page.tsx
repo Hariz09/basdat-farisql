@@ -24,7 +24,7 @@ import {
 
 export default function VenuePage() {
   // ganti role ini sesuai kebutuhan demo
-  const role: "admin" | "organizer" | "customer" = "organizer";
+  const role = "organizer" as "admin" | "organizer" | "customer";
   const canManage = role === "admin" || role === "organizer";
 
   const [venues, setVenues] = useState<Venue[]>(getAllVenues());
