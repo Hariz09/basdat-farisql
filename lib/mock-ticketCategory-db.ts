@@ -1,7 +1,7 @@
-import { TicketCategory } from "@/types/ticketCategory";
+import { ticketCategory } from "@/types/ticketcategory";
 
 const g = globalThis as unknown as {
-  __ticketCategories?: TicketCategory[];
+  __ticketCategories?: ticketCategory[];
 };
 
 if (!g.__ticketCategories) {

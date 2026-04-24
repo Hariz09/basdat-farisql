@@ -1,7 +1,7 @@
-import { EventArtist } from "@/types/eventartist";
+import { eventArtist } from "@/types/eventartist";
 
 const g = globalThis as unknown as {
-  __eventArtists?: EventArtist[];
+  __eventArtists?: eventArtist[];
 };
 
 if (!g.__eventArtists) {

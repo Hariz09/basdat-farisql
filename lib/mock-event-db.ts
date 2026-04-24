@@ -13,7 +13,7 @@ if (!g.__events) {
         eventTitle: "Konser Melodi Senja",
         eventDatetime: "2026-05-15T19:00",
         venueId: "1",
-        organizerId: "org-1",
+        organizerId: "org-2",
       },
     ],
     [
@@ -23,7 +23,7 @@ if (!g.__events) {
         eventTitle: "Harmony Night",
         eventDatetime: "2026-06-01T20:00",
         venueId: "2",
-        organizerId: "org-1",
+        organizerId: "org-3",
       },
     ],
     [

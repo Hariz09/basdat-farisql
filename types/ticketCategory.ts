@@ -1,4 +1,4 @@
-export type TicketCategory = {
+export type ticketCategory = {
   categoryId: string
   categoryName: string
   quota: number
