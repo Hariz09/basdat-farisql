@@ -3,6 +3,7 @@ import type { SessionUser } from "@/lib/session";
 
 const items = [
   { href: "/organizer/dashboard", label: "Dashboard" },
+  { href: "/organizer/artists", label: "Artis" },
   { href: "/organizer/events", label: "Event Saya" },
   { href: "/organizer/venues", label: "Manajemen Venue" },
   { href: "/organizer/seats", label: "Manajemen Kursi" },

@@ -4,6 +4,7 @@ export function GuestNavbar() {
   return (
     <AppHeader
       items={[
+        { href: "/artists", label: "Artis" },
         { href: "/login", label: "Login" },
         { href: "/register", label: "Registrasi" },
       ]}
