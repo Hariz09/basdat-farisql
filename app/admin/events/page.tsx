@@ -1,20 +1,20 @@
 import { redirect } from "next/navigation";
 import EventList from "@/components/event/EventList";
-import { getEventViewsByOrganizer } from "@/lib/mock-event-db";
+import { getAllEventViews } from "@/lib/mock-event-db";
 import { getSession } from "@/lib/session";
 
-export default async function OrganizerEventsPage() {
+export default async function AdminEventsPage() {
   const session = await getSession();
 
-  if (!session || session.role !== "organizer") {
+  if (!session || session.role !== "admin") {
     redirect("/login");
   }
 
-  const events = getEventViewsByOrganizer(session.id);
+  const events = getAllEventViews();
 
   return (
     <EventList
-      role="organizer"
+      role="admin"
       sessionName={session.name}
       sessionId={session.id}
       events={events}

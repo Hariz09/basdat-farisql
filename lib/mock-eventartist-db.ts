@@ -1,4 +1,4 @@
-import { eventArtist } from "@/types/eventartist";
+import { eventArtist } from "@/types/eventArtist";
 
 const g = globalThis as unknown as {
   __eventArtists?: eventArtist[];
