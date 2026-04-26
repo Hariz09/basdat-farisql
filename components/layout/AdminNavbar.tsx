@@ -4,6 +4,7 @@ import type { SessionUser } from "@/lib/session";
 const items = [
   { href: "/admin/dashboard", label: "Dashboard" },
   { href: "/admin/venues", label: "Manajemen Venue" },
+  { href: "/admin/events", label: "Manajemen Event" },
   { href: "/admin/seats", label: "Manajemen Kursi" },
   { href: "/admin/ticket-categories", label: "Kategori Tiket" },
   { href: "/admin/tickets", label: "Manajemen Tiket" },
