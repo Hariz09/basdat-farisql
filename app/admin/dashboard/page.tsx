@@ -16,7 +16,6 @@ export default function AdminDashboardPage() {
             </div>
             <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
           </div>
-          <Badge variant="outline">Realtime</Badge>
         </div>
       }
     />

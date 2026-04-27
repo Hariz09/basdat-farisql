@@ -1,14 +1,25 @@
 import { AppHeader } from "./AppHeader";
 import type { SessionUser } from "@/lib/session";
+import type { NavItem } from "./NavLinks";
 
-const items = [
+const items: NavItem[] = [
   { href: "/customer/dashboard", label: "Dashboard" },
-  { href: "/customer/tickets", label: "Tiket Saya" },
-  { href: "/customer/orders", label: "Pesanan" },
-  { href: "/customer/events", label: "Cari Event" },
-  { href: "/customer/promotions", label: "Promosi" },
-  { href: "/customer/venues", label: "Venue" },
-  { href: "/customer/artists", label: "Artis" },
+  {
+    label: "Aktivitas",
+    children: [
+      { href: "/customer/tickets", label: "Tiket Saya" },
+      { href: "/customer/orders", label: "Pesanan" },
+    ],
+  },
+  {
+    label: "Jelajah",
+    children: [
+      { href: "/customer/events", label: "Cari Event" },
+      { href: "/customer/promotions", label: "Promosi" },
+      { href: "/customer/venues", label: "Venue" },
+      { href: "/customer/artists", label: "Artis" },
+    ],
+  },
 ];
 
 export function CustomerNavbar({ user }: { user: SessionUser }) {

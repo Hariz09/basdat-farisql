@@ -2,47 +2,54 @@ import type { Role } from "@/lib/session";
 
 export type Stat = { label: string; value: string; hint?: string };
 export type Row = Record<string, string>;
+export type InfoCard = {
+  title: string;
+  stats: { label: string; value: string }[];
+  button: { label: string; href: string };
+};
 
 export type DashboardData = {
   stats: Stat[];
   tables: { title: string; columns: string[]; rows: Row[] }[];
+  cards?: InfoCard[];
 };
 
 const admin: DashboardData = {
   stats: [
-    { label: "Total Pengguna", value: "12.847", hint: "+3.2% bulan ini" },
-    { label: "Total Acara", value: "523", hint: "42 berjalan" },
-    { label: "Omzet Platform", value: "Rp 8,2 M", hint: "GMV akumulatif" },
-    { label: "Promosi Aktif", value: "17", hint: "6 kampanye besar" },
+    { label: "Total Pengguna", value: "12.847", hint: "Pengguna Aktif" },
+    { label: "Total Acara", value: "523", hint: "Bulan Ini" },
+    { label: "Omzet Platform", value: "Rp 8,2 M", hint: "Pendapatan Kotor" },
+    { label: "Promosi Aktif", value: "17", hint: "Kampanye berlangsung" },
   ],
-  tables: [
+  tables: [],
+  cards: [
     {
-      title: "Ringkasan Infrastruktur Venue",
-      columns: ["Venue", "Kota", "Kapasitas", "Utilisasi"],
-      rows: [
-        { Venue: "Istora Senayan", Kota: "Jakarta", Kapasitas: "7.500", Utilisasi: "82%" },
-        { Venue: "GOR Sritex Arena", Kota: "Solo", Kapasitas: "5.000", Utilisasi: "64%" },
-        { Venue: "Grand Ballroom Sheraton", Kota: "Bandung", Kapasitas: "1.200", Utilisasi: "47%" },
+      title: "Infrastruktur Venue",
+      stats: [
+        { label: "Total Venue Terdaftar", value: "3 Lokasi" },
+        { label: "Reserved Seating", value: "2 Venue" },
+        { label: "Kapasitas Terbesar", value: "1.000 Kursi" },
       ],
+      button: { label: "Kelola Venue", href: "/admin/venues" },
     },
     {
-      title: "Ringkasan Marketing & Promosi",
-      columns: ["Kode", "Redeem", "Diskon", "Status"],
-      rows: [
-        { Kode: "NEWYEAR26", Redeem: "1.204", Diskon: "15%", Status: "Aktif" },
-        { Kode: "KONSER50", Redeem: "872", Diskon: "10%", Status: "Aktif" },
-        { Kode: "EARLYBIRD", Redeem: "533", Diskon: "20%", Status: "Berakhir" },
+      title: "Marketing & Promosi",
+      stats: [
+        { label: "Promo Persentase", value: "1 Aktif" },
+        { label: "Promo Potongan Nominal", value: "1 Aktif" },
+        { label: "Total Penggunaan", value: "57 Kali" },
       ],
+      button: { label: "Kelola Promosi", href: "/admin/promotions" },
     },
   ],
 };
 
 const organizer: DashboardData = {
   stats: [
-    { label: "Acara Aktif", value: "4", hint: "2 minggu mendatang" },
-    { label: "Tiket Terjual", value: "6.120", hint: "+18% WoW" },
-    { label: "Revenue Bulan Ini", value: "Rp 412 Jt", hint: "Target 80%" },
-    { label: "Venue Mitra", value: "7", hint: "3 kota" },
+    { label: "Acara Aktif", value: "4", hint: "Dalam koordinasi" },
+    { label: "Tiket Terjual", value: "6.120", hint: "Total Terjual" },
+    { label: "Revenue", value: "Rp 412 Jt", hint: "Bulan Ini" },
+    { label: "Venue Mitra", value: "7", hint: "Lokasi Aktif" },
   ],
   tables: [
     {
