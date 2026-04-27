@@ -78,7 +78,7 @@ function DashboardTable({ table }: { table: DashboardData["tables"][0] }) {
 
 type DashboardRowProps = {
   index: number;
-  row: Record<string, any>;
+  row: Row;
   primaryColumn: string;
   metadataColumns: string[];
 };
