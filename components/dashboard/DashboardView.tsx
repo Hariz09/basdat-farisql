@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { StatCard } from "./StatCard";
-import type { DashboardData, InfoCard } from "@/services/dashboardService";
+import type { DashboardData, InfoCard, Row } from "@/services/dashboardService";
 
 type Props = {
   heading: React.ReactNode;
