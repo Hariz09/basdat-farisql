@@ -9,7 +9,6 @@ export default async function CustomerProfilePage() {
       <h1 className="text-2xl font-semibold">Profil Saya</h1>
       <EditCustomerProfileForm
         username={session.username}
-        email={session.email}
         name={session.name}
         phone={session.phone}
       />

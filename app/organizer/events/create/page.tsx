@@ -21,7 +21,7 @@ export default async function OrganizerCreateEventPage() {
         date: "",
         time: "",
         venueId: "",
-        organizerId: session.id,
+        organizerId: session.profileId,
         artists: [],
         tickets: [{ categoryName: "", price: 0, quota: 0 }],
         description: "",

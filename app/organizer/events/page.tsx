@@ -10,13 +10,13 @@ export default async function OrganizerEventsPage() {
     redirect("/login");
   }
 
-  const events = getEventViewsByOrganizer(session.id);
+  const events = getEventViewsByOrganizer(session.profileId);
 
   return (
     <EventList
       role="organizer"
       sessionName={session.name}
-      sessionId={session.id}
+      sessionId={session.profileId}
       events={events}
     />
   );
