@@ -1,28 +1,32 @@
-import { eventArtist } from "@/types/eventArtist";
+import type { EventArtist } from "@/lib/schemas";
+import { EventArtistSchema } from "@/lib/schemas";
+
+const ea = (eventId: string, artistId: string, role?: string): EventArtist =>
+  EventArtistSchema.parse({ eventId, artistId, role });
 
 const g = globalThis as unknown as {
-  __eventArtists?: eventArtist[];
+  __eventArtists?: EventArtist[];
 };
 
 if (!g.__eventArtists) {
   g.__eventArtists = [
-    { eventId: "1", artistId: "4" },
-    { eventId: "1", artistId: "3" },
+    ea("1", "4", "Performer"),
+    ea("1", "3", "Performer"),
 
-    { eventId: "2", artistId: "2" },
-    { eventId: "2", artistId: "6" },
+    ea("2", "2", "Headliner"),
+    ea("2", "6", "Supporting"),
 
-    { eventId: "3", artistId: "1" },
-    { eventId: "3", artistId: "8" },
+    ea("3", "1", "Headliner"),
+    ea("3", "8", "Supporting"),
 
-    { eventId: "4", artistId: "3" },
-    { eventId: "4", artistId: "7" },
+    ea("4", "3", "Performer"),
+    ea("4", "7", "Performer"),
 
-    { eventId: "5", artistId: "5" },
-    { eventId: "5", artistId: "6" },
+    ea("5", "5", "Headliner"),
+    ea("5", "6", "Supporting"),
 
-    { eventId: "6", artistId: "1" },
-    { eventId: "6", artistId: "2" },
+    ea("6", "1", "Performer"),
+    ea("6", "2", "Performer"),
   ];
 }
 

@@ -38,10 +38,6 @@ export default async function AdminProfilePage() {
               <FieldLabel>Nama</FieldLabel>
               <Input defaultValue={user.name} readOnly disabled />
             </Field>
-            <Field>
-              <FieldLabel>Email</FieldLabel>
-              <Input defaultValue={user.email} readOnly disabled />
-            </Field>
           </FieldGroup>
         </CardContent>
       </Card>

@@ -3,11 +3,15 @@ import { cookies } from "next/headers";
 export type Role = "admin" | "organizer" | "customer";
 
 export type SessionUser = {
-  id: string;
+  /** UserAccount.userId — the PK in USER_ACCOUNT table. */
+  userId: string;
+  /** organizerId | customerId | userId (for admin) — used for data-scoped queries. */
+  profileId: string;
   role: Role;
   username: string;
-  email: string;
+  /** fullName (Customer) | organizerName (Organizer) | "Admin" */
   name: string;
+  /** Customer.phoneNumber — only present for customer sessions. */
   phone?: string;
 };
 

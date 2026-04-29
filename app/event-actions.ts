@@ -134,7 +134,7 @@ export async function createEventAction(
   }
 
   const organizerId =
-    session.role === "admin" ? input.organizerId?.trim() : session.id;
+    session.role === "admin" ? input.organizerId?.trim() : session.profileId;
   const normalizedInput = {
     ...input,
     organizerId,
@@ -182,7 +182,9 @@ export async function updateEventAction(
     };
   }
 
-  if (!canManageEvent(session.role, session.id, existingEvent.organizerId)) {
+  if (
+    !canManageEvent(session.role, session.profileId, existingEvent.organizerId)
+  ) {
     return {
       ok: false,
       message: "Anda tidak berhak mengubah event ini.",
@@ -246,7 +248,9 @@ export async function deleteEventAction(
     };
   }
 
-  if (!canManageEvent(session.role, session.id, existingEvent.organizerId)) {
+  if (
+    !canManageEvent(session.role, session.profileId, existingEvent.organizerId)
+  ) {
     return {
       ok: false,
       message: "Anda tidak berhak menghapus event ini.",

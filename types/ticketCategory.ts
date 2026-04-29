@@ -1,7 +1,2 @@
-export type ticketCategory = {
-  categoryId: string
-  categoryName: string
-  quota: number
-  price: number
-  eventId: string
-}
+// Re-exported from the central Zod schema — do not edit here.
+export type { TicketCategory } from "@/lib/schemas";

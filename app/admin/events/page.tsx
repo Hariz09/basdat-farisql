@@ -16,7 +16,7 @@ export default async function AdminEventsPage() {
     <EventList
       role="admin"
       sessionName={session.name}
-      sessionId={session.id}
+      sessionId={session.profileId}
       events={events}
     />
   );

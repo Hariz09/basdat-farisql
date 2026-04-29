@@ -9,11 +9,22 @@ import type {
 import { artists } from "@/lib/mock-artist-db";
 import { eventArtists } from "@/lib/mock-eventartist-db";
 import { ticketCategories } from "@/lib/mock-ticketCategory-db";
-import { users } from "@/lib/mock-db";
+import { organizers } from "@/lib/mock-auth-db";
 import { venues } from "@/lib/mock-venue-db";
 
+/**
+ * StoredEvent — in-memory representation only.
+ * Extends Event with optional `artists` and `tickets` seed arrays.
+ * These are hydrated into EventArtist / TicketCategory tables on first access.
+ * In a real DB you would not store these columns; use JOIN queries instead.
+ */
+type StoredEvent = Event & {
+  artists?: string[];
+  tickets?: EventTicketInput[];
+};
+
 const g = globalThis as unknown as {
-  __events?: Map<string, Event>;
+  __events?: Map<string, StoredEvent>;
 };
 
 if (!g.__events) {
@@ -26,7 +37,8 @@ if (!g.__events) {
         eventDatetime: "2026-05-15T19:00",
         venueId: "1",
         organizerId: "org-2",
-        description: "Konser pembuka pertengahan tahun dengan nuansa pop akustik.",
+        description:
+          "Konser pembuka pertengahan tahun dengan nuansa pop akustik.",
       },
     ],
     [
@@ -37,7 +49,8 @@ if (!g.__events) {
         eventDatetime: "2026-06-01T20:00",
         venueId: "2",
         organizerId: "org-3",
-        description: "Malam harmoni bersama musisi ternama di pusat kota Jakarta.",
+        description:
+          "Malam harmoni bersama musisi ternama di pusat kota Jakarta.",
       },
     ],
     [
@@ -48,7 +61,8 @@ if (!g.__events) {
         eventDatetime: "2026-06-12T18:30",
         venueId: "3",
         organizerId: "org-1",
-        description: "Festival lintas genre dengan performer indie dan pop pilihan.",
+        description:
+          "Festival lintas genre dengan performer indie dan pop pilihan.",
       },
     ],
     [
@@ -84,6 +98,18 @@ if (!g.__events) {
         description: "Pertunjukan musim panas dengan paket tiket bertingkat.",
       },
     ],
+    [
+      "7",
+      {
+        eventId: "7",
+        eventTitle: "Grand Gala — TEST EVENT (Reserved + Voucher)",
+        eventDatetime: "2026-05-10T19:00",
+        venueId: "3",
+        organizerId: "org-1",
+        description:
+          "Event khusus pengujian: venue reserved seating (Graha Sabha Pramana) + semua kode promo aktif. Gunakan DISKON10, HEMAT50K, atau KONSER20.",
+      },
+    ],
   ]);
 }
 
@@ -103,7 +129,7 @@ function getRelatedArtistIds(eventId: string, fallback: string[] = []) {
 
 function getRelatedTickets(eventId: string, fallback: EventTicketInput[] = []) {
   const relatedTickets = ticketCategories
-    .filter((item) => item.eventId === eventId)
+    .filter((item) => item.teventId === eventId)
     .map((item) => ({ ...item }));
 
   if (relatedTickets.length > 0) {
@@ -115,11 +141,11 @@ function getRelatedTickets(eventId: string, fallback: EventTicketInput[] = []) {
     categoryName: ticket.categoryName,
     quota: Number(ticket.quota),
     price: Number(ticket.price),
-    eventId,
+    teventId: eventId,
   }));
 }
 
-function hydrateEvent(event: Event): Event {
+function hydrateEvent(event: StoredEvent): StoredEvent {
   return {
     ...event,
     artists: getRelatedArtistIds(event.eventId, event.artists ?? []),
@@ -128,28 +154,31 @@ function hydrateEvent(event: Event): Event {
 }
 
 function createOrganizerOption(organizerId: string): OrganizerOption {
-  const organizerUser = users.get(organizerId);
+  const organizer = organizers.get(organizerId);
 
   return {
     organizerId,
-    organizerName: organizerUser?.name ?? `Organizer ${organizerId}`,
-    contactEmail: organizerUser?.contactEmail ?? organizerUser?.email,
+    organizerName: organizer?.organizerName ?? `Organizer ${organizerId}`,
+    contactEmail: organizer?.contactEmail ?? undefined,
   };
 }
 
-function toEventView(event: Event): EventView {
+function toEventView(event: StoredEvent): EventView {
   const hydratedEvent = hydrateEvent(event);
-  const artistDetails = (hydratedEvent.artists ?? [])
+  const artistIds: string[] = hydratedEvent.artists ?? [];
+  const artistDetails = artistIds
     .map((artistId) => artists.get(artistId))
     .filter((artist): artist is NonNullable<typeof artist> => Boolean(artist));
 
+  const tickets = hydratedEvent.tickets ?? [];
   return {
     ...hydratedEvent,
     venue: venues.get(hydratedEvent.venueId),
     organizer: createOrganizerOption(hydratedEvent.organizerId),
     artistDetails,
-    totalQuota: (hydratedEvent.tickets ?? []).reduce(
-      (sum, ticket) => sum + ticket.quota,
+    tickets: getRelatedTickets(hydratedEvent.eventId, hydratedEvent.tickets),
+    totalQuota: tickets.reduce(
+      (sum: number, ticket: EventTicketInput) => sum + ticket.quota,
       0,
     ),
   };
@@ -202,7 +231,7 @@ function replaceEventArtists(eventId: string, artistIds: string[]) {
 
 function replaceTicketCategories(eventId: string, tickets: EventTicketInput[]) {
   for (let index = ticketCategories.length - 1; index >= 0; index -= 1) {
-    if (ticketCategories[index].eventId === eventId) {
+    if (ticketCategories[index].teventId === eventId) {
       ticketCategories.splice(index, 1);
     }
   }
@@ -213,7 +242,7 @@ function replaceTicketCategories(eventId: string, tickets: EventTicketInput[]) {
       categoryName: ticket.categoryName,
       quota: Number(ticket.quota),
       price: Number(ticket.price),
-      eventId,
+      teventId: eventId,
     });
   }
 }
@@ -247,15 +276,16 @@ export function getEventViewsByOrganizer(organizerId: string) {
 export function getOrganizerOptions() {
   const organizerMap = new Map<string, OrganizerOption>();
 
-  for (const user of users.values()) {
-    if (user.role === "organizer") {
-      organizerMap.set(user.id, createOrganizerOption(user.id));
-    }
+  for (const org of organizers.values()) {
+    organizerMap.set(org.organizerId, createOrganizerOption(org.organizerId));
   }
 
   for (const event of events.values()) {
     if (!organizerMap.has(event.organizerId)) {
-      organizerMap.set(event.organizerId, createOrganizerOption(event.organizerId));
+      organizerMap.set(
+        event.organizerId,
+        createOrganizerOption(event.organizerId),
+      );
     }
   }
 
@@ -278,7 +308,7 @@ export function createEvent(input: EventFormInput, organizerId: string) {
   const sanitizedInput = sanitizeEventInput(input);
   const eventId = crypto.randomUUID();
 
-  const newEvent: Event = {
+  const newEvent: StoredEvent = {
     eventId,
     eventTitle: sanitizedInput.eventTitle,
     eventDatetime: `${sanitizedInput.date}T${sanitizedInput.time}`,
@@ -291,7 +321,7 @@ export function createEvent(input: EventFormInput, organizerId: string) {
       categoryName: ticket.categoryName,
       price: ticket.price,
       quota: ticket.quota,
-      eventId,
+      teventId: eventId,
     })),
   };
 
@@ -315,7 +345,7 @@ export function updateEvent(
 
   const sanitizedInput = sanitizeEventInput(input);
 
-  const updatedEvent: Event = {
+  const updatedEvent: StoredEvent = {
     ...existingEvent,
     eventTitle: sanitizedInput.eventTitle,
     eventDatetime: `${sanitizedInput.date}T${sanitizedInput.time}`,
@@ -328,7 +358,7 @@ export function updateEvent(
       categoryName: ticket.categoryName,
       price: ticket.price,
       quota: ticket.quota,
-      eventId,
+      teventId: eventId,
     })),
   };
 
@@ -353,7 +383,7 @@ export function deleteEvent(eventId: string) {
   }
 
   for (let index = ticketCategories.length - 1; index >= 0; index -= 1) {
-    if (ticketCategories[index].eventId === eventId) {
+    if (ticketCategories[index].teventId === eventId) {
       ticketCategories.splice(index, 1);
     }
   }

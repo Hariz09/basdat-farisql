@@ -10,17 +10,15 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type Props = {
   username: string;
-  email: string;
   name: string;
   phone?: string;
 };
 
-export function EditCustomerProfileForm({ username, email, name, phone }: Props) {
+export function EditCustomerProfileForm({ username, name, phone }: Props) {
   const { state, action, pending } = useProfileEdit();
 
   return (
     <div className="w-full max-w-2xl font-sans text-black">
-      
       <div className="mb-10 border-b border-black/10 pb-6">
         <h2 className="font-serif text-3xl font-black tracking-tight">
           Profil Pelanggan
@@ -31,11 +29,15 @@ export function EditCustomerProfileForm({ username, email, name, phone }: Props)
       </div>
 
       <form action={action} className="space-y-8">
-        
         {state && !state.ok && (
-          <Alert variant="destructive" className="rounded-md border-red-200 bg-red-50 py-3 text-red-900">
+          <Alert
+            variant="destructive"
+            className="rounded-md border-red-200 bg-red-50 py-3 text-red-900"
+          >
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription className="text-xs font-medium">{state.error}</AlertDescription>
+            <AlertDescription className="text-xs font-medium">
+              {state.error}
+            </AlertDescription>
           </Alert>
         )}
 
@@ -44,61 +46,55 @@ export function EditCustomerProfileForm({ username, email, name, phone }: Props)
             <Lock className="h-3 w-3" />
             Data Permanen
           </div>
-          
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="username" className="font-mono text-[10px] uppercase tracking-widest text-black/60">
-                Username
-              </Label>
-              <Input 
-                id="username" 
-                defaultValue={username} 
-                readOnly 
-                disabled 
-                className="h-11 cursor-not-allowed border-transparent bg-black/3 text-black/50 shadow-none focus-visible:ring-0"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="email" className="font-mono text-[10px] uppercase tracking-widest text-black/60">
-                Alamat Email
-              </Label>
-              <Input 
-                id="email" 
-                defaultValue={email} 
-                readOnly 
-                disabled 
-                className="h-11 cursor-not-allowed border-transparent bg-black/3 text-black/50 shadow-none focus-visible:ring-0"
-              />
-            </div>
+
+          <div className="space-y-2">
+            <Label
+              htmlFor="username"
+              className="font-mono text-[10px] uppercase tracking-widest text-black/60"
+            >
+              Username
+            </Label>
+            <Input
+              id="username"
+              defaultValue={username}
+              readOnly
+              disabled
+              className="h-11 cursor-not-allowed border-transparent bg-black/3 text-black/50 shadow-none focus-visible:ring-0"
+            />
           </div>
         </div>
 
         <div className="space-y-5 px-1 sm:px-0">
           <div className="space-y-2">
-            <Label htmlFor="name" className="font-mono text-[10px] uppercase tracking-widest text-black/80">
+            <Label
+              htmlFor="name"
+              className="font-mono text-[10px] uppercase tracking-widest text-black/80"
+            >
               Nama Lengkap <span className="text-red-500">*</span>
             </Label>
-            <Input 
-              id="name" 
-              name="name" 
-              defaultValue={name} 
-              required 
+            <Input
+              id="name"
+              name="name"
+              defaultValue={name}
+              required
               disabled={pending}
               className="h-11 rounded-md border-black/10 shadow-none focus-visible:border-black focus-visible:ring-1 focus-visible:ring-black/20"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone" className="font-mono text-[10px] uppercase tracking-widest text-black/80">
+            <Label
+              htmlFor="phone"
+              className="font-mono text-[10px] uppercase tracking-widest text-black/80"
+            >
               Nomor Telepon <span className="text-red-500">*</span>
             </Label>
-            <Input 
-              id="phone" 
-              name="phone" 
-              defaultValue={phone ?? ""} 
-              inputMode="tel" 
-              required 
+            <Input
+              id="phone"
+              name="phone"
+              defaultValue={phone ?? ""}
+              inputMode="tel"
+              required
               disabled={pending}
               className="h-11 rounded-md border-black/10 shadow-none focus-visible:border-black focus-visible:ring-1 focus-visible:ring-black/20"
             />
@@ -106,9 +102,9 @@ export function EditCustomerProfileForm({ username, email, name, phone }: Props)
         </div>
 
         <div className="flex items-center justify-end border-t border-black/10 pt-6 mt-10">
-          <Button 
-            type="submit" 
-            disabled={pending} 
+          <Button
+            type="submit"
+            disabled={pending}
             className="h-11 w-full rounded-md bg-black px-8 font-medium text-white transition-all hover:bg-black/80 sm:w-auto"
           >
             {pending ? (
@@ -124,7 +120,6 @@ export function EditCustomerProfileForm({ username, email, name, phone }: Props)
             )}
           </Button>
         </div>
-
       </form>
     </div>
   );

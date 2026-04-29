@@ -44,39 +44,51 @@ export function RegisterOrganizerForm() {
 
         {/* Alert Error */}
         {state && !state.ok && (
-          <Alert variant="destructive" className="py-3 rounded-md bg-red-50 text-red-900 border-red-200">
+          <Alert
+            variant="destructive"
+            className="py-3 rounded-md bg-red-50 text-red-900 border-red-200"
+          >
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription className="text-xs font-medium">{state.error}</AlertDescription>
+            <AlertDescription className="text-xs font-medium">
+              {state.error}
+            </AlertDescription>
           </Alert>
         )}
 
         <div className="space-y-5">
           {/* Field Nama */}
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-[10px] font-mono tracking-widest uppercase text-black/60">
-              Nama Organizer / Penyelenggara <span className="text-red-500">*</span>
+            <Label
+              htmlFor="name"
+              className="text-[10px] font-mono tracking-widest uppercase text-black/60"
+            >
+              Nama Organizer / Penyelenggara{" "}
+              <span className="text-red-500">*</span>
             </Label>
-            <Input 
-              id="name" 
-              name="name" 
+            <Input
+              id="name"
+              name="name"
               placeholder="NAMA LENGKAP ATAU INSTANSI"
-              required 
+              required
               disabled={pending}
               className="border-black/10 focus-visible:ring-black/20 rounded-md shadow-none h-11 placeholder:font-mono placeholder:text-[10px] placeholder:tracking-widest placeholder:text-black/25"
             />
           </div>
 
-          {/* Field Email */}
+          {/* Field Email Kontak (Organizer.contactEmail) */}
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-[10px] font-mono tracking-widest uppercase text-black/60">
-              Email <span className="text-red-500">*</span>
+            <Label
+              htmlFor="contactEmail"
+              className="text-[10px] font-mono tracking-widest uppercase text-black/60"
+            >
+              Email Kontak <span className="text-red-500">*</span>
             </Label>
-            <Input 
-              id="email" 
-              name="email" 
-              type="email" 
+            <Input
+              id="contactEmail"
+              name="contactEmail"
+              type="email"
               placeholder="NAMA@CONTOH.COM"
-              required 
+              required
               disabled={pending}
               className="border-black/10 focus-visible:ring-black/20 rounded-md shadow-none h-11 placeholder:font-mono placeholder:text-[10px] placeholder:tracking-widest placeholder:text-black/25"
             />
@@ -84,15 +96,18 @@ export function RegisterOrganizerForm() {
 
           {/* Field Telepon */}
           <div className="space-y-2">
-            <Label htmlFor="phone" className="text-[10px] font-mono tracking-widest uppercase text-black/60">
+            <Label
+              htmlFor="phone"
+              className="text-[10px] font-mono tracking-widest uppercase text-black/60"
+            >
               Nomor Telepon <span className="text-red-500">*</span>
             </Label>
-            <Input 
-              id="phone" 
-              name="phone" 
-              inputMode="tel" 
+            <Input
+              id="phone"
+              name="phone"
+              inputMode="tel"
               placeholder="08123456789"
-              required 
+              required
               disabled={pending}
               className="border-black/10 focus-visible:ring-black/20 rounded-md shadow-none h-11 placeholder:font-mono placeholder:text-[10px] placeholder:tracking-widest placeholder:text-black/25"
             />
@@ -100,14 +115,17 @@ export function RegisterOrganizerForm() {
 
           {/* Field Username */}
           <div className="space-y-2">
-            <Label htmlFor="username" className="text-[10px] font-mono tracking-widest uppercase text-black/60">
+            <Label
+              htmlFor="username"
+              className="text-[10px] font-mono tracking-widest uppercase text-black/60"
+            >
               Username <span className="text-red-500">*</span>
             </Label>
-            <Input 
-              id="username" 
-              name="username" 
+            <Input
+              id="username"
+              name="username"
               placeholder="NAMA_PENGGUNA"
-              required 
+              required
               disabled={pending}
               className="border-black/10 focus-visible:ring-black/20 rounded-md shadow-none h-11 placeholder:font-mono placeholder:text-[10px] placeholder:tracking-widest placeholder:text-black/25"
             />
@@ -115,7 +133,10 @@ export function RegisterOrganizerForm() {
 
           {/* Field Password */}
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-[10px] font-mono tracking-widest uppercase text-black/60">
+            <Label
+              htmlFor="password"
+              className="text-[10px] font-mono tracking-widest uppercase text-black/60"
+            >
               Kata Sandi (Min. 6) <span className="text-red-500">*</span>
             </Label>
             <PasswordInput
@@ -132,7 +153,10 @@ export function RegisterOrganizerForm() {
 
           {/* Field Konfirmasi Password */}
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword" className="text-[10px] font-mono tracking-widest uppercase text-black/60">
+            <Label
+              htmlFor="confirmPassword"
+              className="text-[10px] font-mono tracking-widest uppercase text-black/60"
+            >
               Konfirmasi Kata Sandi <span className="text-red-500">*</span>
             </Label>
             <PasswordInput
@@ -148,19 +172,20 @@ export function RegisterOrganizerForm() {
 
           {/* Field Syarat & Ketentuan (Checkbox) */}
           <div className="flex items-start space-x-3 bg-black/2 border border-black/10 p-4 rounded-lg mb-8">
-            <Checkbox 
-              id="agree" 
-              name="agree" 
-              required 
+            <Checkbox
+              id="agree"
+              name="agree"
+              required
               disabled={pending}
-              className="mt-0.5 border-black/20 data-[state=checked]:bg-black data-[state=checked]:text-white data-[state=checked]:border-black" 
+              className="mt-0.5 border-black/20 data-[state=checked]:bg-black data-[state=checked]:text-white data-[state=checked]:border-black"
             />
             <div className="grid gap-1.5 leading-none">
-              <Label 
-                htmlFor="agree" 
+              <Label
+                htmlFor="agree"
                 className="text-sm font-medium text-black/80 cursor-pointer"
               >
-                Saya setuju dengan Syarat & Ketentuan <span className="text-red-500">*</span>
+                Saya setuju dengan Syarat & Ketentuan{" "}
+                <span className="text-red-500">*</span>
               </Label>
               <p className="text-[10px] font-mono uppercase tracking-widest text-black/40">
                 Wajib disetujui untuk membuat acara
@@ -171,9 +196,9 @@ export function RegisterOrganizerForm() {
 
         {/* FOOTER FORM */}
         <div className="flex flex-col gap-5 pt-2">
-          <Button 
-            type="submit" 
-            disabled={pending} 
+          <Button
+            type="submit"
+            disabled={pending}
             className="w-full rounded-md bg-black text-white hover:bg-black/80 h-11 font-medium transition-all"
           >
             {pending ? (

@@ -1,17 +1,12 @@
+// Core Event type re-exported from Zod schema.
+export type { Event } from "@/lib/schemas";
+export { EventSchema } from "@/lib/schemas";
+
 import type { Artist } from "./artist";
-import type { ticketCategory } from "./ticketCategory";
+import type { TicketCategory } from "./ticketCategory";
 import type { Venue } from "./venue";
 
-export interface Event {
-  eventId: string;
-  eventTitle: string;
-  eventDatetime: string;
-  venueId: string;
-  organizerId: string;
-  description?: string;
-  artists?: string[];
-  tickets?: ticketCategory[];
-}
+// View / form helpers (not DB columns — UI layer only)
 
 export interface OrganizerOption {
   organizerId: string;
@@ -47,9 +42,17 @@ export interface EventFormValues extends EventFormInput {
   eventId?: string;
 }
 
-export interface EventView extends Event {
+/** Enriched event with joined venue/organizer/artist data for display. */
+export interface EventView {
+  eventId: string;
+  eventTitle: string;
+  eventDatetime: string;
+  venueId: string;
+  organizerId: string;
+  description?: string;
   venue?: Venue;
   organizer: OrganizerOption;
   artistDetails: Artist[];
+  tickets?: TicketCategory[];
   totalQuota: number;
 }

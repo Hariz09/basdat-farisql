@@ -16,6 +16,7 @@ import type { EventView } from "@/types/event";
 type CustomerEventDetailProps = {
   event: EventView;
   backHref?: string;
+  showCheckout?: boolean;
 };
 
 function getStartingPrice(event: EventView) {
@@ -31,6 +32,7 @@ function getStartingPrice(event: EventView) {
 export default function CustomerEventDetail({
   event,
   backHref = "/customer/events",
+  showCheckout = false,
 }: CustomerEventDetailProps) {
   const startingPrice = getStartingPrice(event);
 
@@ -81,9 +83,23 @@ export default function CustomerEventDetail({
               Pilih kategori tiket yang tersedia di bagian bawah halaman ini.
             </p>
             <div className="mt-5 flex flex-col gap-3">
-              <Button asChild className="h-11 bg-blue-600 text-white hover:bg-blue-700">
-                <a href="#ticket-categories">Pilih Kategori Tiket</a>
-              </Button>
+              {showCheckout ? (
+                <Button
+                  asChild
+                  className="h-11 bg-blue-600 text-white hover:bg-blue-700"
+                >
+                  <Link href={`/customer/events/${event.eventId}/checkout`}>
+                    Beli Tiket
+                  </Link>
+                </Button>
+              ) : (
+                <Button
+                  asChild
+                  className="h-11 bg-blue-600 text-white hover:bg-blue-700"
+                >
+                  <a href="#ticket-categories">Pilih Kategori Tiket</a>
+                </Button>
+              )}
               <Button asChild variant="outline" className="h-11">
                 <Link href={backHref}>Lihat Event Lain</Link>
               </Button>
@@ -95,9 +111,11 @@ export default function CustomerEventDetail({
       <section className="grid gap-6 xl:grid-cols-[1.45fr_0.85fr]">
         <div className="space-y-6">
           <article className="rounded-[28px] border border-black/10 bg-white p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-black">Informasi Utama</h2>
+            <h2 className="text-lg font-semibold text-black">
+              Informasi Utama
+            </h2>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-2xl bg-black/[0.03] p-4">
+              <div className="rounded-2xl bg-black/3 p-4">
                 <div className="flex items-center gap-2 text-sm font-medium text-black/60">
                   <CalendarDays className="size-4 text-blue-600" />
                   Tanggal
@@ -109,7 +127,7 @@ export default function CustomerEventDetail({
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-black/[0.03] p-4">
+              <div className="rounded-2xl bg-black/3 p-4">
                 <div className="flex items-center gap-2 text-sm font-medium text-black/60">
                   <Clock3 className="size-4 text-blue-600" />
                   Waktu
@@ -161,9 +179,11 @@ export default function CustomerEventDetail({
               {event.artistDetails.map((artist) => (
                 <div
                   key={artist.artistId}
-                  className="rounded-2xl border border-black/10 bg-black/[0.02] px-4 py-3"
+                  className="rounded-2xl border border-black/10 bg-black/2 px-4 py-3"
                 >
-                  <p className="text-sm font-medium text-black">{artist.name}</p>
+                  <p className="text-sm font-medium text-black">
+                    {artist.name}
+                  </p>
                   <p className="text-xs text-black/50">
                     {artist.genre || "Genre belum diisi"}
                   </p>
@@ -178,7 +198,8 @@ export default function CustomerEventDetail({
               Deskripsi Event
             </div>
             <p className="mt-5 whitespace-pre-line text-sm leading-7 text-black/65">
-              {event.description || "Tidak ada deskripsi tambahan untuk event ini."}
+              {event.description ||
+                "Tidak ada deskripsi tambahan untuk event ini."}
             </p>
           </article>
         </div>
@@ -196,7 +217,7 @@ export default function CustomerEventDetail({
             {(event.tickets ?? []).map((ticket) => (
               <div
                 key={ticket.categoryId}
-                className="rounded-2xl border border-black/10 bg-black/[0.02] p-4"
+                className="rounded-2xl border border-black/10 bg-black/2 p-4"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>

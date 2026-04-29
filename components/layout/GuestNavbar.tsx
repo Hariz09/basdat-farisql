@@ -6,6 +6,7 @@ export function GuestNavbar() {
       items={[
         { href: "/artists", label: "Artis" },
         { href: "/ticket-categories", label: "Kategori Tiket" },
+        { href: "/promotions", label: "Promosi" },
         { href: "/login", label: "Login" },
         { href: "/register", label: "Registrasi" },
       ]}
