@@ -4,6 +4,7 @@ import type { NavItem } from "./NavLinks";
 
 const items: NavItem[] = [
   { href: "/organizer/dashboard", label: "Dashboard" },
+  { href: "/organizer/artists", label: "Artis" },
   { href: "/organizer/events", label: "Event Saya" },
   {
     label: "Manajemen",

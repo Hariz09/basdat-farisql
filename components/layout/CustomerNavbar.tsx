@@ -18,6 +18,7 @@ const items: NavItem[] = [
       { href: "/customer/promotions", label: "Promosi" },
       { href: "/customer/venues", label: "Venue" },
       { href: "/customer/artists", label: "Artis" },
+      { href: "/customer/ticket-categories", label: "Kategori Tiket" },
     ],
   },
 ];

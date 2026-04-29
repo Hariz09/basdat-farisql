@@ -19,6 +19,12 @@ export interface OrganizerOption {
   contactEmail?: string;
 }
 
+export interface EventOption {
+  eventId: string;
+  eventTitle: string;
+  venueCapacity: number;
+}
+
 export interface EventTicketInput {
   categoryId?: string;
   categoryName: string;

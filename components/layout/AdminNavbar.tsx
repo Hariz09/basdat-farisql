@@ -8,6 +8,7 @@ const items: NavItem[] = [
     label: "Manajemen",
     children: [
       { href: "/admin/venues", label: "Venue" },
+      { href: "/admin/artists", label: "Manajemen Artis" },
       { href: "/admin/seats", label: "Kursi" },
       { href: "/admin/ticket-categories", label: "Kategori Tiket" },
       { href: "/admin/tickets", label: "Tiket" },
