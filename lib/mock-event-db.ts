@@ -1,6 +1,7 @@
 import type {
   Event,
   EventFormInput,
+  EventOption,
   EventTicketInput,
   EventView,
   OrganizerOption,
@@ -261,6 +262,16 @@ export function getOrganizerOptions() {
   return Array.from(organizerMap.values()).sort((left, right) =>
     left.organizerName.localeCompare(right.organizerName, "id-ID"),
   );
+}
+
+export function getEventOptions(): EventOption[] {
+  return Array.from(events.values())
+    .map((event) => ({
+      eventId: event.eventId,
+      eventTitle: event.eventTitle,
+      venueCapacity: venues.get(event.venueId)?.capacity ?? 0,
+    }))
+    .sort((a, b) => a.eventTitle.localeCompare(b.eventTitle));
 }
 
 export function createEvent(input: EventFormInput, organizerId: string) {
