@@ -37,19 +37,17 @@ export default function TicketCategoryDirectory({
 }: TicketCategoryDirectoryProps) {
   const canManage = mode === "manage";
   const [isPending, startTransition] = useTransition();
-  const [ticketCategories, setTicketCategories] = useState<TicketCategoryView[]>(
-    initialTicketCategories,
-  );
+  const [ticketCategories, setTicketCategories] = useState<
+    TicketCategoryView[]
+  >(initialTicketCategories);
 
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<TicketCategoryView | null>(
-    null,
-  );
-  const [categoryToDelete, setCategoryToDelete] = useState<TicketCategoryView | null>(
-    null,
-  );
+  const [editingCategory, setEditingCategory] =
+    useState<TicketCategoryView | null>(null);
+  const [categoryToDelete, setCategoryToDelete] =
+    useState<TicketCategoryView | null>(null);
 
   const [categoryName, setCategoryName] = useState("");
   const [quota, setQuota] = useState(0);
@@ -75,7 +73,10 @@ export default function TicketCategoryDirectory({
     const event = events.find((e) => e.eventId === eId);
     const venueCapacity = event?.venueCapacity ?? 0;
     const usedQuota = ticketCategories
-      .filter((tc) => tc.eventId === eId && tc.categoryId !== editingCategory?.categoryId)
+      .filter(
+        (tc) =>
+          tc.teventId === eId && tc.categoryId !== editingCategory?.categoryId,
+      )
       .reduce((sum, tc) => sum + tc.quota, 0);
     return venueCapacity - usedQuota;
   };
@@ -103,7 +104,9 @@ export default function TicketCategoryDirectory({
 
     const availableQuota = getAvailableQuota(eventId);
     if (quota > availableQuota) {
-      toast.error(`Kuota tidak boleh melebihi kapasitas tersedia (${availableQuota}).`);
+      toast.error(
+        `Kuota tidak boleh melebihi kapasitas tersedia (${availableQuota}).`,
+      );
       return false;
     }
 
@@ -120,7 +123,7 @@ export default function TicketCategoryDirectory({
         categoryName: categoryName.trim(),
         quota,
         price,
-        eventId,
+        teventId: eventId,
       });
 
       if (!result.ok) {
@@ -140,7 +143,7 @@ export default function TicketCategoryDirectory({
     setCategoryName(category.categoryName);
     setQuota(category.quota);
     setPrice(category.price);
-    setEventId(category.eventId);
+    setEventId(category.teventId);
     setEditOpen(true);
   };
 
@@ -154,12 +157,15 @@ export default function TicketCategoryDirectory({
     }
 
     startTransition(async () => {
-      const result = await updateTicketCategoryAction(editingCategory.categoryId, {
-        categoryName: categoryName.trim(),
-        quota,
-        price,
-        eventId,
-      });
+      const result = await updateTicketCategoryAction(
+        editingCategory.categoryId,
+        {
+          categoryName: categoryName.trim(),
+          quota,
+          price,
+          teventId: eventId,
+        },
+      );
 
       if (!result.ok) {
         toast.error(result.message);
@@ -183,7 +189,9 @@ export default function TicketCategoryDirectory({
     if (!categoryToDelete) return;
 
     startTransition(async () => {
-      const result = await deleteTicketCategoryAction(categoryToDelete.categoryId);
+      const result = await deleteTicketCategoryAction(
+        categoryToDelete.categoryId,
+      );
 
       if (!result.ok) {
         toast.error(result.message);
@@ -206,7 +214,8 @@ export default function TicketCategoryDirectory({
           category.categoryName.toLowerCase().includes(search.toLowerCase()) ||
           category.eventTitle.toLowerCase().includes(search.toLowerCase());
 
-        const matchEvent = eventFilter === "all" || category.eventId === eventFilter;
+        const matchEvent =
+          eventFilter === "all" || category.teventId === eventFilter;
 
         return matchSearch && matchEvent;
       })
@@ -379,58 +388,62 @@ export default function TicketCategoryDirectory({
       </div>
 
       <div className="grid gap-6">
-        {Array.from(groupedCategories.entries()).map(([eventTitle, categories]) => (
-          <div
-            key={eventTitle}
-            className="rounded-2xl border bg-white p-5 shadow-sm"
-          >
-            <h3 className="mb-4 text-lg font-semibold">{eventTitle}</h3>
-            <div className="space-y-3">
-              {categories.map((category) => (
-                <div
-                  key={category.categoryId}
-                  className="flex flex-col gap-3 rounded-xl border p-4 md:flex-row md:items-center md:justify-between"
-                >
-                  <div className="space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-medium">{category.categoryName}</span>
-                      <span className="rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-xs text-blue-700">
-                        {category.quota.toLocaleString("id-ID")} tiket
-                      </span>
+        {Array.from(groupedCategories.entries()).map(
+          ([eventTitle, categories]) => (
+            <div
+              key={eventTitle}
+              className="rounded-2xl border bg-white p-5 shadow-sm"
+            >
+              <h3 className="mb-4 text-lg font-semibold">{eventTitle}</h3>
+              <div className="space-y-3">
+                {categories.map((category) => (
+                  <div
+                    key={category.categoryId}
+                    className="flex flex-col gap-3 rounded-xl border p-4 md:flex-row md:items-center md:justify-between"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-medium">
+                          {category.categoryName}
+                        </span>
+                        <span className="rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-xs text-blue-700">
+                          {category.quota.toLocaleString("id-ID")} tiket
+                        </span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {formatPrice(category.price)} / orang
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        ID: {category.categoryId}
+                      </p>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {formatPrice(category.price)} / orang
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      ID: {category.categoryId}
-                    </p>
+
+                    {canManage ? (
+                      <div className="flex gap-2">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => handleOpenEdit(category)}
+                        >
+                          Update
+                        </Button>
+
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleOpenDelete(category)}
+                          disabled={isPending}
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    ) : null}
                   </div>
-
-                  {canManage ? (
-                    <div className="flex gap-2">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => handleOpenEdit(category)}
-                      >
-                        Update
-                      </Button>
-
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleOpenDelete(category)}
-                        disabled={isPending}
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  ) : null}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ),
+        )}
 
         {groupedCategories.size === 0 ? (
           <div className="rounded-xl border bg-white p-10 text-center text-sm text-muted-foreground">
@@ -477,7 +490,11 @@ export default function TicketCategoryDirectory({
                     }
                   />
                   <p className="text-xs text-muted-foreground">
-                    Kuota tersedia: {editingCategory ? getAvailableQuota(editingCategory.eventId) + editingCategory.quota : 0}
+                    Kuota tersedia:{" "}
+                    {editingCategory
+                      ? getAvailableQuota(editingCategory.teventId) +
+                        editingCategory.quota
+                      : 0}
                   </p>
                 </div>
 

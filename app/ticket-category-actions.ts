@@ -11,8 +11,11 @@ import {
 import { getAllEvents } from "@/lib/mock-event-db";
 import { getSession } from "@/lib/session";
 import { venues } from "@/lib/mock-venue-db";
-import { getTicketCategoryViews, type TicketCategoryView } from "@/lib/ticket-category-helpers";
-import type { ticketCategory } from "@/types/ticketCategory";
+import {
+  getTicketCategoryViews,
+  type TicketCategoryView,
+} from "@/lib/ticket-category-helpers";
+import type { TicketCategory } from "@/types/ticketCategory";
 
 type TicketCategoryMutationResult =
   | {
@@ -45,7 +48,7 @@ async function getAuthorizedSession() {
 }
 
 function validateTicketCategoryInput(
-  data: Omit<ticketCategory, "categoryId">,
+  data: Omit<TicketCategory, "categoryId">,
   isNew: boolean,
   currentId?: string,
 ) {
@@ -61,12 +64,12 @@ function validateTicketCategoryInput(
     return "Harga harus bilangan positif (> 0).";
   }
 
-  if (!data.eventId) {
+  if (!data.teventId) {
     return "Event wajib dipilih.";
   }
 
   const events = getAllEvents();
-  const event = events.find((e) => e.eventId === data.eventId);
+  const event = events.find((e) => e.eventId === data.teventId);
   if (!event) {
     return "Event tidak ditemukan.";
   }
@@ -76,10 +79,11 @@ function validateTicketCategoryInput(
     return "Kapasitas venue tidak valid.";
   }
 
-  const currentTotalQuota = getTotalQuotaByEventId(data.eventId);
+  const currentTotalQuota = getTotalQuotaByEventId(data.teventId);
   const existingQuota = isNew
     ? 0
-    : (getAllTicketCategories().find((tc) => tc.categoryId === currentId)?.quota ?? 0);
+    : (getAllTicketCategories().find((tc) => tc.categoryId === currentId)
+        ?.quota ?? 0);
   const newTotalQuota = currentTotalQuota - existingQuota + data.quota;
 
   if (newTotalQuota > venueCapacity) {
@@ -90,7 +94,7 @@ function validateTicketCategoryInput(
 }
 
 export async function createTicketCategoryAction(
-  data: Omit<ticketCategory, "categoryId">,
+  data: Omit<TicketCategory, "categoryId">,
 ): Promise<TicketCategoryMutationResult> {
   const session = await getAuthorizedSession();
 
@@ -114,7 +118,7 @@ export async function createTicketCategoryAction(
     categoryName: data.categoryName.trim(),
     quota: data.quota,
     price: data.price,
-    eventId: data.eventId,
+    teventId: data.teventId,
   });
 
   revalidateTicketCategoryPaths();
@@ -128,7 +132,7 @@ export async function createTicketCategoryAction(
 
 export async function updateTicketCategoryAction(
   categoryId: string,
-  data: Omit<ticketCategory, "categoryId">,
+  data: Omit<TicketCategory, "categoryId">,
 ): Promise<TicketCategoryMutationResult> {
   const session = await getAuthorizedSession();
 
@@ -152,7 +156,7 @@ export async function updateTicketCategoryAction(
     categoryName: data.categoryName.trim(),
     quota: data.quota,
     price: data.price,
-    eventId: data.eventId,
+    teventId: data.teventId,
   });
 
   if (!updated) {

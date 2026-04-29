@@ -43,27 +43,32 @@ export function LoginForm() {
       {/* FORM CONTENT */}
       <form action={formAction} className="space-y-6">
         {state && !state.ok && (
-          <Alert variant="destructive" className="py-3 rounded-md bg-red-50 text-red-900 border-red-200">
+          <Alert
+            variant="destructive"
+            className="py-3 rounded-md bg-red-50 text-red-900 border-red-200"
+          >
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription className="text-xs font-medium">{state.error}</AlertDescription>
+            <AlertDescription className="text-xs font-medium">
+              {state.error}
+            </AlertDescription>
           </Alert>
         )}
 
         <div className="space-y-5">
-          {/* Field Email */}
+          {/* Field Username */}
           <div className="space-y-2">
-            <Label 
-              htmlFor="email" 
+            <Label
+              htmlFor="username"
               className="text-[10px] font-mono tracking-widest uppercase text-black/60"
             >
-              Alamat Email
+              Username
             </Label>
             <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="nama@contoh.com"
-              autoComplete="email"
+              id="username"
+              name="username"
+              type="text"
+              placeholder="nama_pengguna"
+              autoComplete="username"
               required
               disabled={pending}
               className="border-black/10 focus-visible:ring-black/20 rounded-md shadow-none h-11 placeholder:text-black/30"
@@ -71,14 +76,14 @@ export function LoginForm() {
           </div>
 
           <div className="space-y-2 mb-8">
-            <Label 
-              htmlFor="password" 
+            <Label
+              htmlFor="password"
               className="text-[10px] font-mono tracking-widest uppercase text-black/60"
             >
               Kata Sandi
             </Label>
             <div className="relative">
-             <PasswordInput
+              <PasswordInput
                 id="password"
                 name="password"
                 autoComplete="current-password"
@@ -93,9 +98,9 @@ export function LoginForm() {
 
         {/* FOOTER FORM */}
         <div className="flex flex-col gap-5 pt-2">
-          <Button 
-            type="submit" 
-            disabled={pending} 
+          <Button
+            type="submit"
+            disabled={pending}
             className="w-full rounded-md bg-black text-white hover:bg-black/80 h-11 font-medium transition-all"
           >
             {pending ? (
