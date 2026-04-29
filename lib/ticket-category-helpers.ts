@@ -1,9 +1,9 @@
 import { getAllEvents } from "@/lib/mock-event-db";
 import { getAllTicketCategories } from "@/lib/mock-ticketCategory-db";
 import { venues } from "@/lib/mock-venue-db";
-import type { ticketCategory } from "@/types/ticketCategory";
+import type { TicketCategory } from "@/types/ticketCategory";
 
-export type TicketCategoryView = ticketCategory & {
+export type TicketCategoryView = TicketCategory & {
   eventTitle: string;
   venueCapacity: number;
 };
@@ -15,7 +15,7 @@ export function getTicketCategoryViews(): TicketCategoryView[] {
 
   return categories
     .map((tc) => {
-      const event = eventMap.get(tc.eventId);
+      const event = eventMap.get(tc.teventId);
       return {
         ...tc,
         eventTitle: event?.eventTitle ?? "Unknown Event",

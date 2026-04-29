@@ -1,8 +1,3 @@
-export type Venue = {
-  venueId: string;
-  venueName: string;
-  capacity: number;
-  address: string;
-  city: string;
-  seatingType: "reserved" | "free";
-};
+// Re-exported from the central Zod schema — do not edit here.
+export type { Venue } from "@/lib/schemas";
+export { VenueSchema } from "@/lib/schemas";
