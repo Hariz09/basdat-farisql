@@ -560,9 +560,6 @@ export default function TicketCategoryDirectory({
                 <div className="mt-4 rounded-lg border bg-muted/50 p-4">
                   <p className="font-medium">{categoryToDelete.categoryName}</p>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    ID: {categoryToDelete.categoryId}
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
                     Event: {categoryToDelete.eventTitle}
                   </p>
                 </div>

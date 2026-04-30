@@ -273,10 +273,6 @@ export default function ArtistDirectory({
                     </span>
                   ) : null}
                 </div>
-
-                <div className="space-y-1 text-sm text-muted-foreground">
-                  <p>ID: {artist.artistId}</p>
-                </div>
               </div>
 
               {canManage ? (
@@ -369,9 +365,6 @@ export default function ArtistDirectory({
               {artistToDelete && (
                 <div className="mt-4 rounded-lg border bg-muted/50 p-4">
                   <p className="font-medium">{artistToDelete.name}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    ID: {artistToDelete.artistId}
-                  </p>
                 </div>
               )}
             </div>
