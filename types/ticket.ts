@@ -12,13 +12,14 @@ export type TicketView = Ticket & {
   venueCity: string;
   price: number;
   customerName: string;
+  seatId?: string;
   seatInfo?: string;
 };
 
 export type TicketFormState = {
   torderId: string;
   tcategoryId: string;
-  seatInfo: string;
+  seatId: string;
 };
 
 export type TicketStats = {

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useTransition, useMemo } from "react";
+import { useState, useTransition, useMemo, useEffect } from "react";
 import type { TicketView, TicketFormState, TicketStats } from "@/types/ticket";
-import { addTicketAction, editTicketAction, removeTicketAction } from "@/app/ticket-actions";
+import { addTicketAction, editTicketAction, removeTicketAction, getDependentOptionsAction } from "@/app/ticket-actions";
+import type { OrderOption, CategoryOption, SeatOption } from "@/app/ticket-actions";
 
-export function useTicket(initialTickets: TicketView[]) {
+export function useTicket(initialTickets: TicketView[], orderOptions: OrderOption[]) {
   const [isPending, startTransition] = useTransition();
 
   const [search, setSearch] = useState("");
@@ -20,13 +21,40 @@ export function useTicket(initialTickets: TicketView[]) {
   const [form, setForm] = useState<TicketFormState>({
     torderId: "",
     tcategoryId: "",
-    seatInfo: "none",
+    seatId: "none",
   });
 
-  const [editForm, setEditForm] = useState<{ status: TicketView["status"]; seatInfo: string }>({
+  const [editForm, setEditForm] = useState<{ status: TicketView["status"]; seatId: string }>({
     status: "Valid",
-    seatInfo: "none",
+    seatId: "none",
   });
+
+  const [categoryOptions, setCategoryOptions] = useState<CategoryOption[]>([]);
+  const [seatOptions, setSeatOptions] = useState<SeatOption[]>([]);
+  const [isReserved, setIsReserved] = useState(false);
+
+  const [editSeatOptions, setEditSeatOptions] = useState<SeatOption[]>([]);
+  const [editIsReserved, setEditIsReserved] = useState(false);
+
+  useEffect(() => {
+    if (!form.torderId) {
+      setCategoryOptions([]);
+      setSeatOptions([]);
+      setIsReserved(false);
+      return;
+    }
+
+    const order = orderOptions.find((o) => o.orderId === form.torderId);
+    if (order) {
+      setIsReserved(order.seatingType === "reserved");
+      startTransition(async () => {
+        const deps = await getDependentOptionsAction(order.eventId, order.venueId);
+        setCategoryOptions(deps.categoryOptions);
+        setSeatOptions(deps.seatOptions);
+        setForm((prev) => ({ ...prev, tcategoryId: "", seatId: "none" }));
+      });
+    }
+  }, [form.torderId, orderOptions]);
 
   const filtered = useMemo(() => {
     return initialTickets.filter((t) => {
@@ -55,7 +83,7 @@ export function useTicket(initialTickets: TicketView[]) {
   };
 
   const resetForm = () => {
-    setForm({ torderId: "", tcategoryId: "", seatInfo: "none" });
+    setForm({ torderId: "", tcategoryId: "", seatId: "none" });
     setEditingTicket(null);
   };
 
@@ -77,16 +105,25 @@ export function useTicket(initialTickets: TicketView[]) {
     setEditingTicket(ticket);
     setEditForm({
       status: ticket.status,
-      seatInfo: ticket.seatInfo || "none",
+      seatId: ticket.seatId || "none",
     });
     setEditOpen(true);
+
+    const order = orderOptions.find((o) => o.orderId === ticket.torderId);
+    if (order) {
+      setEditIsReserved(order.seatingType === "reserved");
+      startTransition(async () => {
+        const deps = await getDependentOptionsAction(order.eventId, order.venueId, ticket.ticketId);
+        setEditSeatOptions(deps.seatOptions);
+      });
+    }
   };
 
   const handleUpdate = () => {
     if (!editingTicket) return;
 
     startTransition(async () => {
-      const result = await editTicketAction(editingTicket.ticketId, editForm.status, editForm.seatInfo);
+      const result = await editTicketAction(editingTicket.ticketId, editForm.status, editForm.seatId);
       if (result.ok) {
         setEditOpen(false);
         setEditingTicket(null);
@@ -141,5 +178,10 @@ export function useTicket(initialTickets: TicketView[]) {
     handleUpdate,
     handleDelete,
     openDeleteDialog,
+    categoryOptions,
+    seatOptions,
+    isReserved,
+    editSeatOptions,
+    editIsReserved,
   };
 }

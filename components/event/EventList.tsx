@@ -211,9 +211,6 @@ export default function EventList({
                 </div>
 
                 <div className="flex items-center justify-between border-t border-black/10 pt-4">
-                  <p className="text-xs text-black/45">
-                    Diperbarui langsung dari mock store di memori server.
-                  </p>
                   <Button asChild variant="ghost">
                     <Link href={`/${role}/events/${event.eventId}`}>Lihat detail</Link>
                   </Button>
