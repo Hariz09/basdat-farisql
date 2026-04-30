@@ -23,6 +23,7 @@ const items: NavItem[] = [
       { href: "/organizer/assets/orders", label: "Order (Aset)" },
     ],
   },
+  { href: "/organizer/promotions", label: "Promosi" },
 ];
 
 export function OrganizerNavbar({ user }: { user: SessionUser }) {
