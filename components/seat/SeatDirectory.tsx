@@ -154,7 +154,7 @@ export default function SeatDirectory({ mode, initialSeats, venueOptions }: Seat
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                  <DialogTitle>Tambah Kursi Baru</DialogTitle>
+                  <DialogTitle className="font-sans text-lg font-bold">Tambah Kursi Baru</DialogTitle>
                 </DialogHeader>
                 <SeatForm form={form} setField={setField} isPending={isPending} venueOptions={venueOptions} />
                 <DialogFooter>
@@ -235,7 +235,7 @@ export default function SeatDirectory({ mode, initialSeats, venueOptions }: Seat
           <Dialog open={editOpen} onOpenChange={(v) => { setEditOpen(v); if (!v) resetForm(); }}>
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
-                <DialogTitle>Edit Kursi</DialogTitle>
+                <DialogTitle className="font-sans text-lg font-bold">Edit Kursi</DialogTitle>
               </DialogHeader>
               <SeatForm form={form} setField={setField} isPending={isPending} venueOptions={venueOptions} />
               <DialogFooter>

@@ -199,7 +199,7 @@ export default function TicketDirectory({
               </DialogTrigger>
               <DialogContent className="sm:max-w-125">
                 <DialogHeader>
-                  <DialogTitle>Tambah Tiket Baru</DialogTitle>
+                  <DialogTitle className="font-sans text-lg font-bold">Tambah Tiket Baru</DialogTitle>
                 </DialogHeader>
                 <TicketForm 
                   form={form} 
@@ -318,7 +318,7 @@ export default function TicketDirectory({
           <Dialog open={editOpen} onOpenChange={(v) => { setEditOpen(v); if (!v) resetForm(); }}>
             <DialogContent className="sm:max-w-125">
               <DialogHeader>
-                <DialogTitle>Update Tiket</DialogTitle>
+                <DialogTitle className="font-sans text-lg font-bold"> Update Tiket</DialogTitle>
               </DialogHeader>
               {editingTicket && (
                 <div className="grid gap-4 py-4">
