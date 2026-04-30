@@ -1,15 +1,7 @@
 import "server-only";
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import path from "node:path";
 import type { TicketCategory } from "@/lib/schemas";
 import { TicketCategorySchema } from "@/lib/schemas";
-
-const RUNTIME_DIRECTORY = path.join(process.cwd(), ".runtime");
-const TICKET_CATEGORIES_FILE_PATH = path.join(
-  RUNTIME_DIRECTORY,
-  "mock-ticket-categories.json",
-);
 
 // Each row validated against TicketCategorySchema (teventId = DB column tevent_id).
 // Replace with `db.query(...)` rows for Neon/PostgreSQL.
@@ -59,56 +51,12 @@ const g = globalThis as unknown as {
   __ticketCategories?: TicketCategory[];
 };
 
-function ensureTicketCategoryFile() {
-  mkdirSync(RUNTIME_DIRECTORY, { recursive: true });
-
-  if (!existsSync(TICKET_CATEGORIES_FILE_PATH)) {
-    writeFileSync(
-      TICKET_CATEGORIES_FILE_PATH,
-      JSON.stringify(seededTicketCategories, null, 2),
-      "utf8",
-    );
-
-    return seededTicketCategories;
-  }
-
-  try {
-    const raw = readFileSync(TICKET_CATEGORIES_FILE_PATH, "utf8");
-    const parsed = JSON.parse(raw) as TicketCategory[];
-
-    if (!Array.isArray(parsed)) {
-      throw new Error("Ticket category runtime store is not an array.");
-    }
-
-    return parsed;
-  } catch {
-    writeFileSync(
-      TICKET_CATEGORIES_FILE_PATH,
-      JSON.stringify(seededTicketCategories, null, 2),
-      "utf8",
-    );
-
-    return seededTicketCategories;
-  }
-}
-
 function getTicketCategoryStore() {
   if (!g.__ticketCategories) {
-    const persistedTicketCategories = ensureTicketCategoryFile();
-    g.__ticketCategories = persistedTicketCategories;
+    g.__ticketCategories = [...seededTicketCategories];
   }
 
   return g.__ticketCategories;
-}
-
-function persistTicketCategories() {
-  const store = getTicketCategoryStore();
-  mkdirSync(RUNTIME_DIRECTORY, { recursive: true });
-  writeFileSync(
-    TICKET_CATEGORIES_FILE_PATH,
-    JSON.stringify(store, null, 2),
-    "utf8",
-  );
 }
 
 export const ticketCategories = getTicketCategoryStore();
@@ -136,7 +84,6 @@ export function createTicketCategory(
     ...data,
   });
   ticketCategories.push(newTicketCategory);
-  persistTicketCategories();
   return newTicketCategory;
 }
 
@@ -156,7 +103,6 @@ export function updateTicketCategory(
   });
 
   ticketCategories[index] = updatedTicketCategory;
-  persistTicketCategories();
 
   return updatedTicketCategory;
 }
@@ -169,7 +115,6 @@ export function deleteTicketCategory(id: string) {
   }
 
   ticketCategories.splice(index, 1);
-  persistTicketCategories();
 
   return true;
 }
