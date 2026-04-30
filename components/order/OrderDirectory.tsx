@@ -1,21 +1,8 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
-import { toast } from "sonner";
-import {
-  deleteOrderAction,
-  updateOrderStatusAction,
-} from "@/app/order-actions";
+import { useMemo, useState } from "react";
 import type { OrderView, PaymentStatus } from "@/types/order";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 
 type OrderDirectoryProps = {
   role: "admin" | "organizer" | "customer";
@@ -40,18 +27,11 @@ export default function OrderDirectory({
   initialOrders,
   title,
 }: OrderDirectoryProps) {
-  const isAdmin = role === "admin";
-  const [isPending, startTransition] = useTransition();
-  const [orders, setOrders] = useState<OrderView[]>(initialOrders);
+  const [orders] = useState<OrderView[]>(initialOrders);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | PaymentStatus>(
     "all",
   );
-
-  const [updateOpen, setUpdateOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<OrderView | null>(null);
-  const [newStatus, setNewStatus] = useState<PaymentStatus>("Pending");
 
   const filtered = useMemo(() => {
     return orders.filter((o) => {
@@ -86,50 +66,6 @@ export default function OrderDirectory({
       timeStyle: "short",
     });
 
-  const handleOpenUpdate = (order: OrderView) => {
-    setSelectedOrder(order);
-    setNewStatus(order.paymentStatus);
-    setUpdateOpen(true);
-  };
-
-  const handleUpdate = () => {
-    if (!selectedOrder) return;
-    startTransition(async () => {
-      const result = await updateOrderStatusAction(
-        selectedOrder.orderId,
-        newStatus,
-      );
-      if (!result.ok) {
-        toast.error(result.message);
-        return;
-      }
-      setOrders(result.orders);
-      setUpdateOpen(false);
-      setSelectedOrder(null);
-      toast.success(result.message);
-    });
-  };
-
-  const handleOpenDelete = (order: OrderView) => {
-    setSelectedOrder(order);
-    setDeleteOpen(true);
-  };
-
-  const handleDelete = () => {
-    if (!selectedOrder) return;
-    startTransition(async () => {
-      const result = await deleteOrderAction(selectedOrder.orderId);
-      if (!result.ok) {
-        toast.error(result.message);
-        return;
-      }
-      setOrders(result.orders);
-      setDeleteOpen(false);
-      setSelectedOrder(null);
-      toast.success(result.message);
-    });
-  };
-
   return (
     <div className="max-w-6xl mx-auto space-y-6 p-6">
       <div className="space-y-1">
@@ -137,7 +73,7 @@ export default function OrderDirectory({
       </div>
 
       <div
-        className={`grid grid-cols-1 gap-4 ${isAdmin || role === "organizer" ? "md:grid-cols-4" : "md:grid-cols-3"}`}
+        className={`grid grid-cols-1 gap-4 ${role === "organizer" ? "md:grid-cols-4" : "md:grid-cols-3"}`}
       >
         <div className="rounded-xl border bg-white p-5 shadow-sm">
           <p className="text-sm text-muted-foreground">Total Order</p>
@@ -153,7 +89,7 @@ export default function OrderDirectory({
             {pendingCount}
           </p>
         </div>
-        {(isAdmin || role === "organizer") && (
+        {role === "organizer" && (
           <div className="rounded-xl border bg-white p-5 shadow-sm">
             <p className="text-sm text-muted-foreground">Total Revenue</p>
             <p className="mt-2 text-2xl font-bold">
@@ -192,22 +128,15 @@ export default function OrderDirectory({
               <tr>
                 <th className="text-left px-4 py-3 font-medium">Order ID</th>
                 <th className="text-left px-4 py-3 font-medium">Tanggal</th>
-                <th className="text-left px-4 py-3 font-medium">Event</th>
-                <th className="text-left px-4 py-3 font-medium">Kategori</th>
-                <th className="text-left px-4 py-3 font-medium">Qty</th>
-                <th className="text-left px-4 py-3 font-medium">Kursi</th>
                 <th className="text-left px-4 py-3 font-medium">Total</th>
                 <th className="text-left px-4 py-3 font-medium">Status</th>
-                {isAdmin && (
-                  <th className="text-left px-4 py-3 font-medium">Aksi</th>
-                )}
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={isAdmin ? 9 : 8}
+                    colSpan={4}
                     className="px-4 py-10 text-center text-muted-foreground"
                   >
                     Tidak ada order yang ditemukan.
@@ -225,14 +154,6 @@ export default function OrderDirectory({
                     <td className="px-4 py-3 text-xs">
                       {formatDate(order.orderDate)}
                     </td>
-                    <td className="px-4 py-3">{order.eventTitle}</td>
-                    <td className="px-4 py-3">{order.categoryName}</td>
-                    <td className="px-4 py-3">{order.quantity}</td>
-                    <td className="px-4 py-3 text-xs">
-                      {order.seatLabel ?? (
-                        <span className="text-muted-foreground">—</span>
-                      )}
-                    </td>
                     <td className="px-4 py-3">
                       {formatPrice(order.totalAmount)}
                     </td>
@@ -243,27 +164,6 @@ export default function OrderDirectory({
                         {STATUS_LABELS[order.paymentStatus]}
                       </span>
                     </td>
-                    {isAdmin && (
-                      <td className="px-4 py-3">
-                        <div className="flex gap-2">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => handleOpenUpdate(order)}
-                          >
-                            Update
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleOpenDelete(order)}
-                            disabled={isPending}
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      </td>
-                    )}
                   </tr>
                 ))
               )}
@@ -271,76 +171,6 @@ export default function OrderDirectory({
           </table>
         </div>
       </div>
-
-      <Dialog open={updateOpen} onOpenChange={setUpdateOpen}>
-        <DialogContent className="sm:max-w-100">
-          <DialogHeader>
-            <DialogTitle>Update Status Order</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <p className="text-sm text-muted-foreground">
-              Order ID:{" "}
-              <span className="font-mono">{selectedOrder?.orderId}</span>
-            </p>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Status Pembayaran</label>
-              <select
-                className="flex h-10 w-full rounded-md border bg-white px-3 text-sm"
-                value={newStatus}
-                onChange={(e) => setNewStatus(e.target.value as PaymentStatus)}
-              >
-                <option value="Pending">Pending</option>
-                <option value="Paid">Lunas</option>
-                <option value="Cancelled">Dibatalkan</option>
-              </select>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setUpdateOpen(false)}>
-              Batal
-            </Button>
-            <Button onClick={handleUpdate} disabled={isPending}>
-              {isPending ? "Memproses..." : "Update"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent className="sm:max-w-100">
-          <DialogHeader>
-            <DialogTitle>Konfirmasi Hapus Order</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p className="text-sm text-muted-foreground">
-              Apakah Anda yakin ingin menghapus order ini?
-            </p>
-            {selectedOrder && (
-              <div className="mt-4 rounded-lg border bg-muted/50 p-4 space-y-1">
-                <p className="text-xs font-mono">{selectedOrder.orderId}</p>
-                <p className="text-sm">
-                  {selectedOrder.eventTitle} — {selectedOrder.categoryName}
-                </p>
-                <p className="text-sm font-medium">
-                  {formatPrice(selectedOrder.totalAmount)}
-                </p>
-              </div>
-            )}
-          </div>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setDeleteOpen(false)}>
-              Batal
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={isPending}
-            >
-              {isPending ? "Memproses..." : "Hapus"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
