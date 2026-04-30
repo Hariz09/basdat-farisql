@@ -401,9 +401,6 @@ export default function TicketCategoryDirectory({
                     <p className="text-sm text-muted-foreground">
                       {formatPrice(category.price)} / orang
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      ID: {category.categoryId}
-                    </p>
                   </div>
 
                   {canManage ? (
@@ -542,9 +539,6 @@ export default function TicketCategoryDirectory({
               {categoryToDelete && (
                 <div className="mt-4 rounded-lg border bg-muted/50 p-4">
                   <p className="font-medium">{categoryToDelete.categoryName}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    ID: {categoryToDelete.categoryId}
-                  </p>
                   <p className="mt-1 text-sm text-muted-foreground">
                     Event: {categoryToDelete.eventTitle}
                   </p>
