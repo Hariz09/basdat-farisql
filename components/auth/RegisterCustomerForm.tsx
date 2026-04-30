@@ -36,42 +36,33 @@ export function RegisterCustomerForm() {
         {/* Hidden Input Role */}
         <input type="hidden" name="role" value="customer" />
 
-
         {/* Alert Error */}
         {state && !state.ok && (
-          <Alert variant="destructive" className="py-3 rounded-md bg-red-50 text-red-900 border-red-200">
+          <Alert
+            variant="destructive"
+            className="py-3 rounded-md bg-red-50 text-red-900 border-red-200"
+          >
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription className="text-xs font-medium">{state.error}</AlertDescription>
+            <AlertDescription className="text-xs font-medium">
+              {state.error}
+            </AlertDescription>
           </Alert>
         )}
 
         <div className="space-y-5">
           {/* Field Nama */}
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-[10px] font-mono tracking-widest uppercase text-black/60">
+            <Label
+              htmlFor="name"
+              className="text-[10px] font-mono tracking-widest uppercase text-black/60"
+            >
               Nama Lengkap <span className="text-red-500">*</span>
             </Label>
-            <Input 
-              id="name" 
-              name="name" 
+            <Input
+              id="name"
+              name="name"
               placeholder="NAMA LENGKAP ANDA"
-              required 
-              disabled={pending}
-              className="border-black/10 focus-visible:ring-black/20 rounded-md shadow-none h-11 placeholder:font-mono placeholder:text-[10px] placeholder:tracking-widest placeholder:text-black/25"
-            />
-          </div>
-
-          {/* Field Email */}
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-[10px] font-mono tracking-widest uppercase text-black/60">
-              Email <span className="text-red-500">*</span>
-            </Label>
-            <Input 
-              id="email" 
-              name="email" 
-              type="email" 
-              placeholder="NAMA@CONTOH.COM"
-              required 
+              required
               disabled={pending}
               className="border-black/10 focus-visible:ring-black/20 rounded-md shadow-none h-11 placeholder:font-mono placeholder:text-[10px] placeholder:tracking-widest placeholder:text-black/25"
             />
@@ -79,15 +70,18 @@ export function RegisterCustomerForm() {
 
           {/* Field Telepon */}
           <div className="space-y-2">
-            <Label htmlFor="phone" className="text-[10px] font-mono tracking-widest uppercase text-black/60">
+            <Label
+              htmlFor="phone"
+              className="text-[10px] font-mono tracking-widest uppercase text-black/60"
+            >
               Nomor Telepon <span className="text-red-500">*</span>
             </Label>
-            <Input 
-              id="phone" 
-              name="phone" 
-              inputMode="tel" 
+            <Input
+              id="phone"
+              name="phone"
+              inputMode="tel"
               placeholder="08123456789"
-              required 
+              required
               disabled={pending}
               className="border-black/10 focus-visible:ring-black/20 rounded-md shadow-none h-11 placeholder:font-mono placeholder:text-[10px] placeholder:tracking-widest placeholder:text-black/25"
             />
@@ -95,14 +89,17 @@ export function RegisterCustomerForm() {
 
           {/* Field Username */}
           <div className="space-y-2">
-            <Label htmlFor="username" className="text-[10px] font-mono tracking-widest uppercase text-black/60">
+            <Label
+              htmlFor="username"
+              className="text-[10px] font-mono tracking-widest uppercase text-black/60"
+            >
               Username <span className="text-red-500">*</span>
             </Label>
-            <Input 
-              id="username" 
-              name="username" 
+            <Input
+              id="username"
+              name="username"
               placeholder="NAMA_PENGGUNA"
-              required 
+              required
               disabled={pending}
               className="border-black/10 focus-visible:ring-black/20 rounded-md shadow-none h-11 placeholder:font-mono placeholder:text-[10px] placeholder:tracking-widest placeholder:text-black/25"
             />
@@ -110,7 +107,10 @@ export function RegisterCustomerForm() {
 
           {/* Field Password */}
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-[10px] font-mono tracking-widest uppercase text-black/60">
+            <Label
+              htmlFor="password"
+              className="text-[10px] font-mono tracking-widest uppercase text-black/60"
+            >
               Kata Sandi (Min. 6) <span className="text-red-500">*</span>
             </Label>
             <PasswordInput
@@ -126,7 +126,10 @@ export function RegisterCustomerForm() {
           </div>
 
           <div className="space-y-2 mb-8">
-            <Label htmlFor="confirmPassword" className="text-[10px] font-mono tracking-widest uppercase text-black/60">
+            <Label
+              htmlFor="confirmPassword"
+              className="text-[10px] font-mono tracking-widest uppercase text-black/60"
+            >
               Konfirmasi Kata Sandi <span className="text-red-500">*</span>
             </Label>
             <PasswordInput
@@ -143,9 +146,9 @@ export function RegisterCustomerForm() {
 
         {/* FOOTER FORM */}
         <div className="flex flex-col gap-5 pt-2">
-          <Button 
-            type="submit" 
-            disabled={pending} 
+          <Button
+            type="submit"
+            disabled={pending}
             className="w-full rounded-md bg-black text-white hover:bg-black/80 h-11 font-medium transition-all"
           >
             {pending ? (

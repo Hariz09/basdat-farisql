@@ -14,6 +14,7 @@ const items: NavItem[] = [
       { href: "/admin/tickets", label: "Tiket" },
     ],
   },
+  { href: "/admin/promotions", label: "Promosi" },
   {
     label: "Order & Aset",
     children: [

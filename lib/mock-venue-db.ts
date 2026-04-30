@@ -1,48 +1,51 @@
 import "server-only";
 
-import type { Venue } from "@/types/venue";
+import type { Venue } from "@/lib/schemas";
+import { VenueSchema } from "@/lib/schemas";
 
+// Each row is validated against the Zod schema at seed time.
+// Replace these with `db.query(...)` rows for Neon/PostgreSQL.
 const seededVenues: Venue[] = [
-  {
+  VenueSchema.parse({
     venueId: "1",
     venueName: "Jakarta Convention Center",
     capacity: 1000,
     address: "Jl. Gatot Subroto No.1",
     city: "Jakarta",
-    seatingType: "reserved",
-  },
-  {
+    seatingType: "free",
+  }),
+  VenueSchema.parse({
     venueId: "2",
     venueName: "Balai Sarbini",
     capacity: 500,
     address: "Jl. Jend. Sudirman",
     city: "Jakarta",
     seatingType: "free",
-  },
-  {
+  }),
+  VenueSchema.parse({
     venueId: "3",
     venueName: "Graha Sabha Pramana",
     capacity: 1200,
     address: "Bulaksumur",
     city: "Yogyakarta",
     seatingType: "reserved",
-  },
-  {
+  }),
+  VenueSchema.parse({
     venueId: "4",
     venueName: "Trans Luxury Hall",
     capacity: 800,
     address: "Jl. Gatot Subroto No.289",
     city: "Bandung",
     seatingType: "free",
-  },
-  {
+  }),
+  VenueSchema.parse({
     venueId: "5",
     venueName: "Dyandra Convention Center",
     capacity: 1500,
     address: "Jl. Basuki Rahmat No.93-105",
     city: "Surabaya",
     seatingType: "reserved",
-  },
+  }),
 ];
 
 const g = globalThis as unknown as {

@@ -86,7 +86,6 @@ export async function createVenueAction(
     city: data.city.trim(),
     capacity: data.capacity,
     address: data.address.trim(),
-    seatingType: data.seatingType,
   });
 
   revalidateVenuePaths();
@@ -125,7 +124,6 @@ export async function updateVenueAction(
     city: data.city.trim(),
     capacity: data.capacity,
     address: data.address.trim(),
-    seatingType: data.seatingType,
   });
 
   if (!updated) {

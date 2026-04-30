@@ -19,7 +19,7 @@ export default async function OrganizerEventDetailPage({
   const { id } = await params;
   const event = getEventViewById(id);
 
-  if (!event || event.organizerId !== session.id) {
+  if (!event || event.organizerId !== session.profileId) {
     notFound();
   }
 

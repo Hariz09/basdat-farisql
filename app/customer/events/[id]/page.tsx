@@ -16,5 +16,5 @@ export default async function CustomerEventDetailPage({
     notFound();
   }
 
-  return <CustomerEventDetail event={event} />;
+  return <CustomerEventDetail event={event} showCheckout />;
 }

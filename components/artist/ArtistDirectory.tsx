@@ -144,7 +144,11 @@ export default function ArtistDirectory({
   };
 
   const genreOptions = useMemo(() => {
-    const genres = new Set(artists.map((artist) => artist.genre).filter(Boolean));
+    const genres = new Set(
+      artists
+        .map((artist) => artist.genre)
+        .filter((g): g is string => Boolean(g)),
+    );
     return Array.from(genres).sort();
   }, [artists]);
 

@@ -45,7 +45,9 @@ export default function VenueDirectory({
   const [city, setCity] = useState("");
   const [capacity, setCapacity] = useState(0);
   const [address, setAddress] = useState("");
-  const [seatingType, setSeatingType] = useState<"reserved" | "free">("reserved");
+  const [seatingType, setSeatingType] = useState<"reserved" | "free">(
+    "reserved",
+  );
 
   const [search, setSearch] = useState("");
   const [cityFilter, setCityFilter] = useState("all");
@@ -115,7 +117,7 @@ export default function VenueDirectory({
     setCity(venue.city);
     setCapacity(venue.capacity);
     setAddress(venue.address);
-    setSeatingType(venue.seatingType);
+    setSeatingType(venue.seatingType ?? "free");
     setEditOpen(true);
   };
 
@@ -270,7 +272,9 @@ export default function VenueDirectory({
                       type="number"
                       placeholder="Kapasitas"
                       value={capacity}
-                      onChange={(event) => setCapacity(Number(event.target.value))}
+                      onChange={(event) =>
+                        setCapacity(Number(event.target.value))
+                      }
                     />
 
                     <Input
@@ -348,7 +352,10 @@ export default function VenueDirectory({
 
               {canManage ? (
                 <div className="flex gap-2">
-                  <Button variant="secondary" onClick={() => handleOpenEdit(venue)}>
+                  <Button
+                    variant="secondary"
+                    onClick={() => handleOpenEdit(venue)}
+                  >
                     Edit
                   </Button>
 

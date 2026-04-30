@@ -1,88 +1,154 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { dashboardPathFor, clearSession, setSession, type Role } from "@/lib/session";
-import { findByEmail, findByUsername, users, type UserRecord } from "@/lib/mock-db";
+import {
+  dashboardPathFor,
+  clearSession,
+  setSession,
+  type Role,
+} from "@/lib/session";
+import {
+  findByUsername,
+  findUserProfile,
+  userAccounts,
+  customers,
+  organizers,
+  admins,
+} from "@/lib/mock-auth-db";
+import {
+  UserAccountSchema,
+  CustomerSchema,
+  OrganizerSchema,
+  AdminSchema,
+} from "@/lib/schemas";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
-export async function loginAction(_: ActionResult | null, formData: FormData): Promise<ActionResult> {
-  const email = String(formData.get("email") ?? "").trim();
+export async function loginAction(
+  _: ActionResult | null,
+  formData: FormData,
+): Promise<ActionResult> {
+  const username = String(formData.get("username") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  if (!email || !password) return { ok: false, error: "Email dan password wajib diisi." };
+  if (!username || !password)
+    return { ok: false, error: "Username dan password wajib diisi." };
 
-  const user = findByEmail(email);
-  if (!user || user.password !== password) {
+  const account = findByUsername(username);
+  if (!account || account.password !== password)
     return { ok: false, error: "Kredensial tidak valid." };
-  }
+
+  const profile = findUserProfile(account.userId);
+  if (!profile) return { ok: false, error: "Profil pengguna tidak ditemukan." };
 
   await setSession({
-    id: user.id,
-    role: user.role,
-    username: user.username,
-    email: user.email,
-    name: user.name,
-    phone: user.phone,
+    userId: profile.userId,
+    profileId: profile.profileId,
+    role: profile.role,
+    username: profile.username,
+    name: profile.name,
+    phone: profile.phone,
   });
-  redirect(dashboardPathFor(user.role));
+  redirect(dashboardPathFor(profile.role));
 }
 
 type RegisterInput = {
-  role: Exclude<Role, "admin">;
+  role: Role;
   name: string;
-  email: string;
   username: string;
   password: string;
   confirmPassword: string;
+  /** Customer.phoneNumber */
   phone?: string;
+  /** Organizer.contactEmail */
+  contactEmail?: string;
   agree?: boolean;
 };
 
 function validateRegister(input: RegisterInput): string | null {
-  const { name, email, username, password, confirmPassword, phone, agree, role } = input;
-  if (!name || !email || !username || !password || !confirmPassword) return "Seluruh field wajib diisi.";
-  if (role === "organizer" && !phone) return "Nomor telepon wajib diisi.";
-  if (role === "organizer" && !agree) return "Anda harus menyetujui syarat & ketentuan.";
+  const {
+    name,
+    username,
+    password,
+    confirmPassword,
+    phone,
+    contactEmail,
+    agree,
+    role,
+  } = input;
+  if (!name || !username || !password || !confirmPassword)
+    return "Seluruh field wajib diisi.";
+  if (role === "customer" && !phone) return "Nomor telepon wajib diisi.";
+  if (role === "organizer" && !contactEmail) return "Email kontak wajib diisi.";
+  if (role === "organizer" && !agree)
+    return "Anda harus menyetujui syarat & ketentuan.";
+  if (role === "admin" && !name) return "Nama admin wajib diisi.";
   if (password.length < 6) return "Password minimal 6 karakter.";
   if (password !== confirmPassword) return "Konfirmasi password tidak cocok.";
-  if (findByEmail(email)) return "Email sudah terdaftar.";
   if (findByUsername(username)) return "Username sudah digunakan.";
   return null;
 }
 
 export async function registerAction(
   _: ActionResult | null,
-  formData: FormData
+  formData: FormData,
 ): Promise<ActionResult> {
   const role = String(formData.get("role") ?? "") as RegisterInput["role"];
-  if (role !== "organizer" && role !== "customer") {
+  if (role !== "organizer" && role !== "customer" && role !== "admin")
     return { ok: false, error: "Role tidak valid." };
-  }
+
   const input: RegisterInput = {
     role,
     name: String(formData.get("name") ?? "").trim(),
-    email: String(formData.get("email") ?? "").trim(),
     username: String(formData.get("username") ?? "").trim(),
     password: String(formData.get("password") ?? ""),
     confirmPassword: String(formData.get("confirmPassword") ?? ""),
     phone: String(formData.get("phone") ?? "").trim() || undefined,
+    contactEmail:
+      String(formData.get("contactEmail") ?? "").trim() || undefined,
     agree: formData.get("agree") === "on",
   };
+
   const err = validateRegister(input);
   if (err) return { ok: false, error: err };
 
-  const id = `${role}-${Date.now()}`;
-  const record: UserRecord = {
-    id,
-    role,
+  // Insert USER_ACCOUNT row
+  const userId = crypto.randomUUID();
+  const account = UserAccountSchema.parse({
+    userId,
     username: input.username,
-    email: input.email,
     password: input.password,
-    name: input.name,
-    phone: input.phone,
-    contactEmail: role === "organizer" ? input.email : undefined,
-  };
-  users.set(id, record);
+  });
+  userAccounts.set(userId, account);
+
+  // Insert CUSTOMER, ORGANIZER, or ADMIN row
+  if (role === "customer") {
+    const customerId = crypto.randomUUID();
+    const customer = CustomerSchema.parse({
+      customerId,
+      fullName: input.name,
+      phoneNumber: input.phone ?? null,
+      userId,
+    });
+    customers.set(customerId, customer);
+  } else if (role === "organizer") {
+    const organizerId = crypto.randomUUID();
+    const organizer = OrganizerSchema.parse({
+      organizerId,
+      organizerName: input.name,
+      contactEmail: input.contactEmail ?? null,
+      userId,
+    });
+    organizers.set(organizerId, organizer);
+  } else {
+    const adminId = crypto.randomUUID();
+    const admin = AdminSchema.parse({
+      adminId,
+      adminName: input.name,
+      userId,
+    });
+    admins.set(adminId, admin);
+  }
+
   redirect("/login?registered=1");
 }
 

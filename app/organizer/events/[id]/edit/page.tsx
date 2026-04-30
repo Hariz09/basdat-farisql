@@ -21,7 +21,7 @@ export default async function OrganizerEditEventPage({
   const { id } = await params;
   const event = getEventById(id);
 
-  if (!event || event.organizerId !== session.id) {
+  if (!event || event.organizerId !== session.profileId) {
     notFound();
   }
 
@@ -39,13 +39,12 @@ export default async function OrganizerEditEventPage({
         venueId: event.venueId,
         organizerId: event.organizerId,
         artists: event.artists ?? [],
-        tickets:
-          event.tickets?.map((ticket) => ({
-            categoryId: ticket.categoryId,
-            categoryName: ticket.categoryName,
-            price: ticket.price,
-            quota: ticket.quota,
-          })) ?? [{ categoryName: "", price: 0, quota: 0 }],
+        tickets: event.tickets?.map((ticket) => ({
+          categoryId: ticket.categoryId,
+          categoryName: ticket.categoryName,
+          price: ticket.price,
+          quota: ticket.quota,
+        })) ?? [{ categoryName: "", price: 0, quota: 0 }],
         description: event.description ?? "",
       }}
       venues={getAllVenues()}
