@@ -13,11 +13,13 @@ import {
   userAccounts,
   customers,
   organizers,
+  admins,
 } from "@/lib/mock-auth-db";
 import {
   UserAccountSchema,
   CustomerSchema,
   OrganizerSchema,
+  AdminSchema,
 } from "@/lib/schemas";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
@@ -50,7 +52,7 @@ export async function loginAction(
 }
 
 type RegisterInput = {
-  role: Exclude<Role, "admin">;
+  role: Role;
   name: string;
   username: string;
   password: string;
@@ -79,6 +81,7 @@ function validateRegister(input: RegisterInput): string | null {
   if (role === "organizer" && !contactEmail) return "Email kontak wajib diisi.";
   if (role === "organizer" && !agree)
     return "Anda harus menyetujui syarat & ketentuan.";
+  if (role === "admin" && !name) return "Nama admin wajib diisi.";
   if (password.length < 6) return "Password minimal 6 karakter.";
   if (password !== confirmPassword) return "Konfirmasi password tidak cocok.";
   if (findByUsername(username)) return "Username sudah digunakan.";
@@ -90,7 +93,7 @@ export async function registerAction(
   formData: FormData,
 ): Promise<ActionResult> {
   const role = String(formData.get("role") ?? "") as RegisterInput["role"];
-  if (role !== "organizer" && role !== "customer")
+  if (role !== "organizer" && role !== "customer" && role !== "admin")
     return { ok: false, error: "Role tidak valid." };
 
   const input: RegisterInput = {
@@ -117,7 +120,7 @@ export async function registerAction(
   });
   userAccounts.set(userId, account);
 
-  // Insert CUSTOMER or ORGANIZER row
+  // Insert CUSTOMER, ORGANIZER, or ADMIN row
   if (role === "customer") {
     const customerId = crypto.randomUUID();
     const customer = CustomerSchema.parse({
@@ -127,7 +130,7 @@ export async function registerAction(
       userId,
     });
     customers.set(customerId, customer);
-  } else {
+  } else if (role === "organizer") {
     const organizerId = crypto.randomUUID();
     const organizer = OrganizerSchema.parse({
       organizerId,
@@ -136,6 +139,14 @@ export async function registerAction(
       userId,
     });
     organizers.set(organizerId, organizer);
+  } else {
+    const adminId = crypto.randomUUID();
+    const admin = AdminSchema.parse({
+      adminId,
+      adminName: input.name,
+      userId,
+    });
+    admins.set(adminId, admin);
   }
 
   redirect("/login?registered=1");

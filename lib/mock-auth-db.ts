@@ -5,11 +5,12 @@
  * Replace with real DB queries (e.g. Neon) by swapping the function bodies
  * while keeping the exported signatures identical.
  */
-import type { UserAccount, Customer, Organizer } from "@/lib/schemas";
+import type { UserAccount, Customer, Organizer, Admin } from "@/lib/schemas";
 import {
   UserAccountSchema,
   CustomerSchema,
   OrganizerSchema,
+  AdminSchema,
 } from "@/lib/schemas";
 import type { Role } from "./session";
 
@@ -34,6 +35,7 @@ const g = globalThis as unknown as {
   __userAccounts?: Map<string, UserAccount>;
   __customers?: Map<string, Customer>;
   __organizers?: Map<string, Organizer>;
+  __admins?: Map<string, Admin>;
 };
 
 if (!g.__userAccounts) {
@@ -131,9 +133,16 @@ if (!g.__organizers) {
   ]);
 }
 
+// ADMIN table
+
+if (!g.__admins) {
+  g.__admins = new Map<string, Admin>();
+}
+
 export const userAccounts = g.__userAccounts!;
 export const customers = g.__customers!;
 export const organizers = g.__organizers!;
+export const admins = g.__admins!;
 
 // Lookup helpers (replace with SQL JOINs when using a real DB)
 
@@ -160,7 +169,21 @@ export function findUserProfile(userId: string): UserProfile | null {
   const account = userAccounts.get(userId);
   if (!account) return null;
 
-  // Admin — no Customer / Organizer row
+  // Admin
+  for (const adm of admins.values()) {
+    if (adm.userId === userId) {
+      return {
+        userId: account.userId,
+        profileId: adm.adminId,
+        role: "admin",
+        username: account.username,
+        password: account.password,
+        name: adm.adminName,
+      };
+    }
+  }
+
+  // Legacy hardcoded admin (before admin registration existed)
   if (userId === ADMIN_USER_ID) {
     return {
       userId: account.userId,

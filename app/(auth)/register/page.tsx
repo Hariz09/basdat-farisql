@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarCheck, UserRound, ArrowRight } from "lucide-react";
+import { CalendarCheck, UserRound, Shield, ArrowRight } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -20,6 +20,12 @@ const choices = [
     title: "Organizer",
     desc: "Membuat acara, mengelola venue, serta memantau penjualan tiket secara langsung.",
     Icon: CalendarCheck,
+  },
+  {
+    href: "/register/admin",
+    title: "Admin",
+    desc: "Mengelola seluruh sistem, memantau pengguna, dan mengawasi operasional platform.",
+    Icon: Shield,
   },
 ];
 
@@ -47,11 +53,10 @@ export default function RegisterRolePage() {
           <Link key={href} href={href} className="group block outline-none">
             <Card className="border-black/10 shadow-none transition-all duration-300 hover:border-black hover:bg-black/2 group-focus-visible:ring-2 group-focus-visible:ring-black/20 group-focus-visible:border-black">
               <CardHeader className="flex flex-row items-start gap-5 p-6 space-y-0">
-                
                 <div className="shrink-0 w-12 h-12 border border-black/10 bg-white flex items-center justify-center rounded-lg transition-colors duration-300 group-hover:bg-black group-hover:text-white group-hover:border-black">
                   <Icon className="w-5 h-5" strokeWidth={1.5} />
                 </div>
-                
+
                 <div className="flex-1">
                   <CardTitle className="font-serif font-bold text-2xl mb-2">
                     {title}
@@ -59,7 +64,7 @@ export default function RegisterRolePage() {
                   <CardDescription className="text-sm text-black/50 leading-relaxed mb-4">
                     {desc}
                   </CardDescription>
-                  
+
                   <CardContent className="p-0">
                     <div className="flex items-center text-[10px] font-mono tracking-widest uppercase text-black/40 transition-colors group-hover:text-black font-medium">
                       Lanjutkan Pendaftaran
@@ -67,7 +72,6 @@ export default function RegisterRolePage() {
                     </div>
                   </CardContent>
                 </div>
-
               </CardHeader>
             </Card>
           </Link>
@@ -76,11 +80,6 @@ export default function RegisterRolePage() {
 
       {/* FOOTER & CATATAN BADGE */}
       <div className="flex flex-col items-center gap-8">
-        <div className="inline-flex items-center gap-2 text-[9px] font-mono tracking-widest uppercase text-black/40 border border-black/10 px-3 py-1.5 rounded-full bg-white">
-          <span className="w-1.5 h-1.5 rounded-full bg-black/20" />
-          Akun admin dibuat secara internal
-        </div>
-
         <div className="text-center">
           <span className="text-[10px] font-mono tracking-widest uppercase text-black/40">
             Sudah punya akun?{" "}
