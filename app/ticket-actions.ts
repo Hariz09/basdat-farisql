@@ -8,6 +8,8 @@ import { events } from "@/lib/mock-event-db";
 import { customers } from "@/lib/mock-auth-db";
 import { venues } from "@/lib/mock-venue-db";
 import { getAvailableSeatsByVenue, getSeatById } from "@/lib/mock-seat-db";
+import type { SessionUser } from "@/lib/session";
+
 import type { TicketView, TicketActionResult, TicketFormState } from "@/types/ticket";
 
 type TicketOverride = {
@@ -21,20 +23,38 @@ const generateTicketCode = (): string => {
   return `TKT-2026-${randomNum}`;
 };
 
-export async function getTicketsAction(): Promise<TicketActionResult> {
+export async function getTicketsAction(session: SessionUser): Promise<TicketActionResult> {
   try {
     const rawTickets = Array.from(tickets.values());
 
-    const ticketViews: TicketView[] = rawTickets.map((ticket) => {
+    const filteredRawTickets = rawTickets.filter((ticket) => {
+      if (session.role === "admin") return true;
+
+      const order = orders.get(ticket.torderId);
+
+      if (session.role === "customer") {
+        const customerRecord = order ? customers.get(order.customerId) : undefined;
+        return customerRecord?.userId === session.userId;
+      }
+
+      if (session.role === "organizer") {
+        const category = ticketCategories.find((c) => c.categoryId === ticket.tcategoryId);
+        const event = category ? events.get(category.teventId) : undefined;
+        return event?.organizerId === session.profileId;
+      }
+
+      return false;
+    });
+
+    const ticketViews: TicketView[] = filteredRawTickets.map((ticket) => {
       const override = frontendStatusOverrides.get(ticket.ticketId);
       const order = orders.get(ticket.torderId);
       const category = ticketCategories.find((c) => c.categoryId === ticket.tcategoryId);
       const event = category ? events.get(category.teventId) : undefined;
       const customer = order ? customers.get(order.customerId) : undefined;
       const venue = event ? venues.get(event.venueId) : undefined;
-      const defaultStatus: TicketView["status"] = "Valid";
-      const rel = hasRelationships.find((r) => r.ticketId === ticket.ticketId);
 
+      const rel = hasRelationships.find((r) => r.ticketId === ticket.ticketId);
       let seatInfo = undefined;
       let seatId = undefined;
 
@@ -48,7 +68,7 @@ export async function getTicketsAction(): Promise<TicketActionResult> {
 
       return {
         ...ticket,
-        status: override?.status ?? defaultStatus,
+        status: override?.status ?? "Valid",
         seatId,
         seatInfo,
         categoryName: category?.categoryName ?? "-",
@@ -70,8 +90,11 @@ export async function getTicketsAction(): Promise<TicketActionResult> {
 export async function addTicketAction(data: TicketFormState): Promise<TicketActionResult> {
   try {
     const category = ticketCategories.find((c) => c.categoryId === data.tcategoryId);
-    if (!category) return { ok: false, message: "Kategori tiket tidak ditemukan" };
-
+    
+    if (!category) {
+      return { ok: false, message: "Kategori tiket tidak ditemukan" };
+    }
+    
     if (category.quota <= 0) {
       return { ok: false, message: "Kuota tiket untuk kategori ini sudah penuh" };
     }
@@ -89,7 +112,10 @@ export async function addTicketAction(data: TicketFormState): Promise<TicketActi
     }
 
     revalidatePath("/admin/tickets");
-    return getTicketsAction();
+    revalidatePath("/organizer/tickets");
+    revalidatePath("/customer/tickets");
+    
+    return { ok: true, message: "Sukses", tickets: [] }; 
   } catch (error) {
     return { ok: false, message: "Gagal membuat tiket" };
   }
@@ -97,7 +123,11 @@ export async function addTicketAction(data: TicketFormState): Promise<TicketActi
 
 export async function editTicketAction(ticketId: string, status: TicketView["status"], seatId?: string): Promise<TicketActionResult> {
   try {
-    frontendStatusOverrides.set(ticketId, { status });
+    const currentOverride = frontendStatusOverrides.get(ticketId);
+    
+    frontendStatusOverrides.set(ticketId, {
+      status,
+    });
 
     const relIndex = hasRelationships.findIndex((r) => r.ticketId === ticketId);
     if (relIndex > -1) {
@@ -109,7 +139,10 @@ export async function editTicketAction(ticketId: string, status: TicketView["sta
     }
 
     revalidatePath("/admin/tickets");
-    return getTicketsAction();
+    revalidatePath("/organizer/tickets");
+    revalidatePath("/customer/tickets");
+    
+    return { ok: true, message: "Sukses", tickets: [] };
   } catch (error) {
     return { ok: false, message: "Gagal memperbarui tiket" };
   }
@@ -126,7 +159,10 @@ export async function removeTicketAction(ticketId: string): Promise<TicketAction
     deleteTicket(ticketId);
     
     revalidatePath("/admin/tickets");
-    return getTicketsAction();
+    revalidatePath("/organizer/tickets");
+    revalidatePath("/customer/tickets");
+    
+    return { ok: true, message: "Sukses", tickets: [] };
   } catch (error) {
     return { ok: false, message: "Gagal menghapus tiket" };
   }
@@ -183,7 +219,14 @@ export async function getDependentOptionsAction(eventId: string, venueId: string
   const cats = ticketCategories.filter((c) => c.teventId === eventId);
   const categoryOptions: CategoryOption[] = cats.map((c) => {
     const catTickets = Array.from(tickets.values()).filter((t) => t.tcategoryId === c.categoryId);
-    const validCount = catTickets.length;
+    let validCount = 0;
+    
+    for (const t of catTickets) {
+      const override = frontendStatusOverrides.get(t.ticketId);
+      const order = orders.get(t.torderId);
+      let defaultStatus = "Valid";
+      if ((override?.status ?? defaultStatus) !== "Dibatalkan") validCount++;
+    }
 
     return {
       categoryId: c.categoryId,

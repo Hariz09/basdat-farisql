@@ -8,30 +8,39 @@ const g = globalThis as unknown as { __tickets?: Map<string, Ticket> };
 if (!g.__tickets) {
   g.__tickets = new Map<string, Ticket>([
     [
-      "tkt_001",
+      "tkt-1",
       TicketSchema.parse({
-        ticketId: "tkt_001",
-        ticketCode: "TTK-EVT001-VIP-001",
-        tcategoryId: "cat_vip_001",
-        torderId: "ord_001",
+        ticketId: "tkt-1",
+        ticketCode: "TKT-2026-0001",
+        tcategoryId: "2",
+        torderId: "ord-1",
       }),
     ],
     [
-      "tkt_002",
+      "tkt-2",
       TicketSchema.parse({
-        ticketId: "tkt_002",
-        ticketCode: "TTK-EVT001-VIP-002",
-        tcategoryId: "cat_vip_001",
-        torderId: "ord_001",
+        ticketId: "tkt-2",
+        ticketCode: "TKT-2026-0002",
+        tcategoryId: "3",
+        torderId: "ord-2",
       }),
     ],
     [
-      "tkt_003",
+      "tkt-3",
       TicketSchema.parse({
-        ticketId: "tkt_003",
-        ticketCode: "TTK-FSB002-GEN-045",
-        tcategoryId: "cat_gen_002",
-        torderId: "ord_002",
+        ticketId: "tkt-3",
+        ticketCode: "TKT-2026-0003",
+        tcategoryId: "3",
+        torderId: "ord-2",
+      }),
+    ],
+    [
+      "tkt-4",
+      TicketSchema.parse({
+        ticketId: "tkt-4",
+        ticketCode: "TKT-2026-0004",
+        tcategoryId: "6",
+        torderId: "ord-3",
       }),
     ],
   ]);

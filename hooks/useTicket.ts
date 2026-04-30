@@ -38,9 +38,9 @@ export function useTicket(initialTickets: TicketView[], orderOptions: OrderOptio
 
   useEffect(() => {
     if (!form.torderId) {
-      setCategoryOptions([]);
-      setSeatOptions([]);
-      setIsReserved(false);
+      setCategoryOptions(prev => prev.length > 0 ? [] : prev);
+      setSeatOptions(prev => prev.length > 0 ? [] : prev);
+      setIsReserved(prev => prev !== false ? false : prev);
       return;
     }
 
@@ -51,11 +51,14 @@ export function useTicket(initialTickets: TicketView[], orderOptions: OrderOptio
         const deps = await getDependentOptionsAction(order.eventId, order.venueId);
         setCategoryOptions(deps.categoryOptions);
         setSeatOptions(deps.seatOptions);
-        setForm((prev) => ({ ...prev, tcategoryId: "", seatId: "none" }));
+        
+        setForm((prev) => {
+          if (prev.tcategoryId === "" && prev.seatId === "none") return prev;
+          return { ...prev, tcategoryId: "", seatId: "none" };
+        });
       });
     }
   }, [form.torderId, orderOptions]);
-
   const filtered = useMemo(() => {
     return initialTickets.filter((t) => {
       const matchesSearch =
@@ -160,7 +163,7 @@ export function useTicket(initialTickets: TicketView[], orderOptions: OrderOptio
   const filteredEditSeatOptions = useMemo(() => {
     return editingTicket ? editSeatOptions.filter(s => s.section === editingTicket.categoryName) : [];
   }, [editSeatOptions, editingTicket]);
-  
+
   return {
     filtered,
     stats,
