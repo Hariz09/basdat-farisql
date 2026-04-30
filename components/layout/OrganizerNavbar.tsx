@@ -12,7 +12,7 @@ const items: NavItem[] = [
       { href: "/organizer/venues", label: "Venue" },
       { href: "/organizer/seats", label: "Kursi" },
       { href: "/organizer/ticket-categories", label: "Kategori Tiket" },
-      { href: "/organizer/tickets", label: "Tiket" },
+      { href: "/organizer/my-tickets", label: "Tiket" },
     ],
   },
   {

@@ -7,7 +7,7 @@ const items: NavItem[] = [
   {
     label: "Aktivitas",
     children: [
-      { href: "/customer/tickets", label: "Tiket Saya" },
+      { href: "/customer/my-tickets", label: "Tiket Saya" },
       { href: "/customer/orders", label: "Pesanan" },
     ],
   },

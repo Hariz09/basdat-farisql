@@ -11,7 +11,7 @@ const items: NavItem[] = [
       { href: "/admin/artists", label: "Manajemen Artis" },
       { href: "/admin/seats", label: "Kursi" },
       { href: "/admin/ticket-categories", label: "Kategori Tiket" },
-      { href: "/admin/tickets", label: "Tiket" },
+      { href: "/admin/my-tickets", label: "Tiket" },
     ],
   },
   { href: "/admin/promotions", label: "Promosi" },
