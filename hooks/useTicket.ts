@@ -152,6 +152,15 @@ export function useTicket(initialTickets: TicketView[], orderOptions: OrderOptio
     });
   };
 
+  const filteredSeatOptions = useMemo(() => {
+    const selectedCategory = categoryOptions.find(c => c.categoryId === form.tcategoryId);
+    return selectedCategory ? seatOptions.filter(s => s.section === selectedCategory.categoryName) : [];
+  }, [seatOptions, form.tcategoryId, categoryOptions]);
+
+  const filteredEditSeatOptions = useMemo(() => {
+    return editingTicket ? editSeatOptions.filter(s => s.section === editingTicket.categoryName) : [];
+  }, [editSeatOptions, editingTicket]);
+  
   return {
     filtered,
     stats,

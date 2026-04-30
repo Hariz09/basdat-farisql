@@ -4,7 +4,7 @@ export { TicketSchema } from "@/lib/schemas";
 import type { Ticket } from "@/lib/schemas";
 
 export type TicketView = Ticket & {
-  status: "Valid" | "Terpakai" | "Dibatalkan";
+  status: "Valid" | "Terpakai";
   categoryName: string;
   eventName: string;
   eventDate: string;

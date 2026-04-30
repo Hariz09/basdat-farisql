@@ -32,13 +32,9 @@ export async function getTicketsAction(): Promise<TicketActionResult> {
       const event = category ? events.get(category.teventId) : undefined;
       const customer = order ? customers.get(order.customerId) : undefined;
       const venue = event ? venues.get(event.venueId) : undefined;
-
-      let defaultStatus: TicketView["status"] = "Valid";
-      if (order?.paymentStatus === "Cancelled" || order?.paymentStatus === "Pending") {
-        defaultStatus = "Dibatalkan";
-      }
-
+      const defaultStatus: TicketView["status"] = "Valid";
       const rel = hasRelationships.find((r) => r.ticketId === ticket.ticketId);
+
       let seatInfo = undefined;
       let seatId = undefined;
 
@@ -172,12 +168,14 @@ export async function getOrderOptionsAction(): Promise<OrderOption[]> {
 
 export type CategoryOption = {
   categoryId: string;
+  categoryName: string;
   label: string;
   disabled: boolean;
 };
 
 export type SeatOption = {
   seatId: string;
+  section: string;
   label: string;
 };
 
@@ -185,18 +183,11 @@ export async function getDependentOptionsAction(eventId: string, venueId: string
   const cats = ticketCategories.filter((c) => c.teventId === eventId);
   const categoryOptions: CategoryOption[] = cats.map((c) => {
     const catTickets = Array.from(tickets.values()).filter((t) => t.tcategoryId === c.categoryId);
-    let validCount = 0;
-    
-    for (const t of catTickets) {
-      const override = frontendStatusOverrides.get(t.ticketId);
-      const order = orders.get(t.torderId);
-      let defaultStatus = "Valid";
-      if (order?.paymentStatus === "Cancelled" || order?.paymentStatus === "Pending") defaultStatus = "Dibatalkan";
-      if ((override?.status ?? defaultStatus) !== "Dibatalkan") validCount++;
-    }
+    const validCount = catTickets.length;
 
     return {
       categoryId: c.categoryId,
+      categoryName: c.categoryName,
       label: `${c.categoryName} — Rp ${c.price.toLocaleString("id-ID")} (${validCount}/${c.quota})`,
       disabled: validCount >= c.quota,
     };
@@ -210,6 +201,7 @@ export async function getDependentOptionsAction(eventId: string, venueId: string
     available.forEach((s) => {
       seatOptions.push({
         seatId: s.seatId,
+        section: s.section,
         label: `${s.section} — Baris ${s.rowNumber}, No. ${s.seatNumber}`,
       });
     });
@@ -221,6 +213,7 @@ export async function getDependentOptionsAction(eventId: string, venueId: string
         if (currentSeat) {
           seatOptions.unshift({
             seatId: currentSeat.seatId,
+            section: currentSeat.section,
             label: `${currentSeat.section} — Baris ${currentSeat.rowNumber}, No. ${currentSeat.seatNumber}`,
           });
         }

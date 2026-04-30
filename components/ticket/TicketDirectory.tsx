@@ -184,7 +184,6 @@ export default function TicketDirectory({ mode, initialTickets, orderOptions }: 
             <option value="Semua Status">Semua Status</option>
             <option value="Valid">Valid</option>
             <option value="Terpakai">Terpakai</option>
-            <option value="Dibatalkan">Dibatalkan</option>
           </select>
           
           {canManage && (
@@ -321,7 +320,6 @@ export default function TicketDirectory({ mode, initialTickets, orderOptions }: 
                     >
                       <option value="Valid">Valid</option>
                       <option value="Terpakai">Terpakai</option>
-                      <option value="Dibatalkan">Dibatalkan</option>
                     </select>
                   </div>
                   {editIsReserved && (
