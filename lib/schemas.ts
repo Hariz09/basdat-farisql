@@ -56,6 +56,14 @@ export const OrganizerSchema = z.object({
   userId: z.string().min(1),
 });
 
+// 5.5. ADMIN
+
+export const AdminSchema = z.object({
+  adminId: z.string().min(1),
+  adminName: z.string().max(100),
+  userId: z.string().min(1),
+});
+
 // 6. VENUE
 
 export const VenueSchema = z.object({
@@ -173,6 +181,7 @@ export type Role = z.infer<typeof RoleSchema>;
 export type AccountRole = z.infer<typeof AccountRoleSchema>;
 export type Customer = z.infer<typeof CustomerSchema>;
 export type Organizer = z.infer<typeof OrganizerSchema>;
+export type Admin = z.infer<typeof AdminSchema>;
 export type Venue = z.infer<typeof VenueSchema>;
 export type Seat = z.infer<typeof SeatSchema>;
 export type Event = z.infer<typeof EventSchema>;

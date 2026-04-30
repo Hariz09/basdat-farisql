@@ -4,9 +4,7 @@ export function GuestNavbar() {
   return (
     <AppHeader
       items={[
-        { href: "/artists", label: "Artis" },
-        { href: "/ticket-categories", label: "Kategori Tiket" },
-        { href: "/promotions", label: "Promosi" },
+        { href: "/", label: "Home" },
         { href: "/login", label: "Login" },
         { href: "/register", label: "Registrasi" },
       ]}
