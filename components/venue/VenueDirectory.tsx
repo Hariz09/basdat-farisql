@@ -362,6 +362,12 @@ export default function VenueDirectory({
                   <Button
                     variant="destructive"
                     onClick={() => {
+                      const confirmed = window.confirm(
+                        `Hapus venue "${venue.venueName}"?`
+                      );
+
+                      if (!confirmed) return;
+
                       startTransition(async () => {
                         const result = await deleteVenueAction(venue.venueId);
 
