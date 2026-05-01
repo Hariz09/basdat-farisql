@@ -1,3 +1,5 @@
+export type { Seat } from "@/lib/schemas";
+
 import type { Seat } from "@/lib/schemas";
 
 export type SeatView = Seat & {
